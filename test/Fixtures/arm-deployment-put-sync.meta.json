@@ -1,0 +1,8 @@
+{
+  "name": "arm-deployment-put",
+  "status": 201,
+  "headers": {
+    "x-ms-ratelimit-remaining-subscription-writes": "199",
+    "x-ms-request-id": "00000000-0000-0000-0000-000000000000"
+  }
+}

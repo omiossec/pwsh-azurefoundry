@@ -1,0 +1,1 @@
+{"id":"b6001e9358d14846af5e2fb4c22666c8","model":"mistral-large-3","choices":[{"index":0,"message":{"role":"assistant","content":"Pong"},"finish_reason":"stop"}],"usage":{"prompt_tokens":11,"completion_tokens":3,"total_tokens":14,"audio_prompt_tokens":0},"created":1794952293,"object":"chat.completion","prompt_filter_results":null}

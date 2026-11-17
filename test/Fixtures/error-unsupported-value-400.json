@@ -1,0 +1,1 @@
+{"error":{"code":"unsupported_request_value","message":"Model does not support request parameter value supplied: 'temperature' must be in the range [0.0 and 1.0].","details":"Model does not support request parameter value supplied: 'temperature' must be in the range [0.0 and 1.0]."}}

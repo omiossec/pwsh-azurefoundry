@@ -1,0 +1,30 @@
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-test/providers/Microsoft.CognitiveServices/accounts/test-foundry/deployments/spike-cohere",
+  "type": "Microsoft.CognitiveServices/accounts/deployments",
+  "name": "spike-cohere",
+  "sku": {
+    "name": "GlobalStandard",
+    "capacity": 1
+  },
+  "properties": {
+    "model": {
+      "format": "Cohere",
+      "name": "Cohere-embed-v3-english",
+      "version": "1"
+    },
+    "versionUpgradeOption": "OnceNewDefaultVersionAvailable",
+    "currentCapacity": 1,
+    "capabilities": {},
+    "raiPolicyName": "Microsoft.DefaultV2",
+    "provisioningState": "Creating"
+  },
+  "systemData": {
+    "createdBy": "user@example.com",
+    "createdByType": "User",
+    "createdAt": "2026-11-17T21:59:45.5427252Z",
+    "lastModifiedBy": "user@example.com",
+    "lastModifiedByType": "User",
+    "lastModifiedAt": "2026-11-17T21:59:45.5427252Z"
+  },
+  "etag": "\"00000000-0000-0000-0000-000000000000\""
+}

@@ -1,0 +1,1 @@
+{"detail":[{"type":"union_tag_invalid","loc":["body","questions","q"],"msg":"Input tag 'nope' found using 'type' does not match any of the expected tags: 'noul', 'choice', 'score'"}]}

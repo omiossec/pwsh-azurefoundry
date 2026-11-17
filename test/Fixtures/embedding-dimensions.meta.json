@@ -1,0 +1,9 @@
+{
+  "name": "embedding-dimensions",
+  "status": 200,
+  "headers": {
+    "x-ratelimit-limit-tokens": "1000",
+    "x-ratelimit-remaining-tokens": "981",
+    "Content-Type": "application/json"
+  }
+}
