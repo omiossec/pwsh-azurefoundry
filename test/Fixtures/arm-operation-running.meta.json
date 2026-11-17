@@ -1,0 +1,8 @@
+{
+  "name": "arm-deployment-put-partner-poll-1",
+  "status": 200,
+  "headers": {
+    "x-ms-ratelimit-remaining-subscription-reads": "249",
+    "x-ms-request-id": "00000000-0000-0000-0000-000000000000"
+  }
+}

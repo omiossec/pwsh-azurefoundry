@@ -1,0 +1,17 @@
+{
+  "name": "burst-1",
+  "status": 200,
+  "headers": {
+    "x-ratelimit-limit-requests": "20",
+    "x-ratelimit-abusepenalty-active": "False",
+    "x-ratelimit-remaining-requests": "19",
+    "Content-Type": "application/json",
+    "x-ratelimit-key": "Mistral-Large-3",
+    "x-ratelimit-reset-requests": "3",
+    "x-ratelimit-renewalperiod-tokens": "60",
+    "x-ratelimit-renewalperiod-requests": "60",
+    "x-ratelimit-limit-tokens": "20000",
+    "x-ratelimit-remaining-tokens": "19979",
+    "x-ratelimit-reset-tokens": "0"
+  }
+}

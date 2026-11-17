@@ -1,0 +1,27 @@
+{
+  "name": "chat-openai-v1-bearer",
+  "method": "POST",
+  "uri": "https://test-foundry.openai.azure.com/openai/v1/chat/completions",
+  "auth": "Bearer",
+  "status": 200,
+  "elapsedMs": 351,
+  "headers": {
+    "x-ms-rai-invoked": "true",
+    "X-Request-ID": "00000000-0000-0000-0000-000000000000",
+    "x-ms-client-request-id": "Not-Set",
+    "azureml-model-session": "d20261021013940-a1ef98dc",
+    "x-ratelimit-key": "Mistral-Large-3",
+    "x-ratelimit-remaining-requests": "19",
+    "x-ratelimit-reset-requests": "3",
+    "x-ratelimit-limit-requests": "20",
+    "x-ratelimit-renewalperiod-requests": "60",
+    "x-ratelimit-abusepenalty-active": "False",
+    "x-ratelimit-remaining-tokens": "19971",
+    "x-ratelimit-reset-tokens": "0",
+    "x-ratelimit-limit-tokens": "20000",
+    "x-ratelimit-renewalperiod-tokens": "60",
+    "apim-request-id": "00000000-0000-0000-0000-000000000000",
+    "x-ms-region": "Sweden Central",
+    "Content-Type": "application/json"
+  }
+}

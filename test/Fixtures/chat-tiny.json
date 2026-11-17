@@ -1,0 +1,1 @@
+{"id":"9d11a08fe3fe4b348e8e3e98e879511e","model":"mistral-large-3","choices":[{"index":0,"message":{"role":"assistant","content":"Hello"},"finish_reason":"length"}],"usage":{"prompt_tokens":4,"completion_tokens":1,"total_tokens":5,"audio_prompt_tokens":0},"created":1794952862,"object":"chat.completion","prompt_filter_results":null}

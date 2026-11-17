@@ -1,0 +1,95 @@
+{
+  "value": [
+    {
+      "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-test/providers/Microsoft.CognitiveServices/accounts/test-foundry/deployments/Mistral-Large-3",
+      "type": "Microsoft.CognitiveServices/accounts/deployments",
+      "name": "Mistral-Large-3",
+      "sku": {
+        "name": "GlobalStandard",
+        "capacity": 20
+      },
+      "properties": {
+        "model": {
+          "format": "Mistral AI",
+          "name": "Mistral-Large-3",
+          "version": "1"
+        },
+        "versionUpgradeOption": "OnceNewDefaultVersionAvailable",
+        "currentCapacity": 20,
+        "capabilities": {
+          "area": "EUR",
+          "chatCompletion": "true"
+        },
+        "raiPolicyName": "Microsoft.DefaultV2",
+        "provisioningState": "Succeeded",
+        "rateLimits": [
+          {
+            "key": "request",
+            "renewalPeriod": 60,
+            "count": 20
+          },
+          {
+            "key": "token",
+            "renewalPeriod": 60,
+            "count": 20000
+          }
+        ]
+      },
+      "systemData": {
+        "createdBy": "user@example.com",
+        "createdByType": "User",
+        "createdAt": "2026-11-16T21:52:32.9948442Z",
+        "lastModifiedBy": "user@example.com",
+        "lastModifiedByType": "User",
+        "lastModifiedAt": "2026-11-16T21:52:32.9948442Z"
+      },
+      "etag": "\"00000000-0000-0000-0000-000000000000\""
+    },
+    {
+      "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-test/providers/Microsoft.CognitiveServices/accounts/test-foundry/deployments/Decision-1.1",
+      "type": "Microsoft.CognitiveServices/accounts/deployments",
+      "name": "Decision-1.1",
+      "sku": {
+        "name": "GlobalStandard",
+        "capacity": 50
+      },
+      "properties": {
+        "model": {
+          "format": "Microsoft",
+          "name": "Microsoft-Decision-1.1",
+          "version": "1"
+        },
+        "versionUpgradeOption": "OnceNewDefaultVersionAvailable",
+        "currentCapacity": 50,
+        "capabilities": {
+          "chatCompletion": "false",
+          "decision": "true",
+          "area": "EUR"
+        },
+        "raiPolicyName": "Microsoft.DefaultV2",
+        "provisioningState": "Succeeded",
+        "rateLimits": [
+          {
+            "key": "request",
+            "renewalPeriod": 60,
+            "count": 50
+          },
+          {
+            "key": "token",
+            "renewalPeriod": 60,
+            "count": 50000
+          }
+        ]
+      },
+      "systemData": {
+        "createdBy": "user@example.com",
+        "createdByType": "User",
+        "createdAt": "2026-11-17T21:30:24.5318599Z",
+        "lastModifiedBy": "user@example.com",
+        "lastModifiedByType": "User",
+        "lastModifiedAt": "2026-11-17T21:30:24.5318599Z"
+      },
+      "etag": "\"00000000-0000-0000-0000-000000000000\""
+    }
+  ]
+}

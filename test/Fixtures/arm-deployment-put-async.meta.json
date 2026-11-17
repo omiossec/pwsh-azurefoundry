@@ -1,0 +1,10 @@
+{
+  "name": "arm-deployment-put-partner",
+  "status": 201,
+  "headers": {
+    "x-ms-ratelimit-remaining-subscription-writes": "199",
+    "Location": "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CognitiveServices/locations/swedencentral/operationResults/00000000-0000-0000-0000-000000000000?api-version=2025-06-01",
+    "Azure-AsyncOperation": "https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.CognitiveServices/locations/swedencentral/operationResults/00000000-0000-0000-0000-000000000000?api-version=2025-06-01",
+    "x-ms-request-id": "00000000-0000-0000-0000-000000000000"
+  }
+}

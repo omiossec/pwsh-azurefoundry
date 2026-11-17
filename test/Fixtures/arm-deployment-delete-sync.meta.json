@@ -1,0 +1,8 @@
+{
+  "name": "arm-deployment-delete-spike-embed",
+  "status": 200,
+  "headers": {
+    "x-ms-request-id": "00000000-0000-0000-0000-000000000000",
+    "x-ms-ratelimit-remaining-subscription-deletes": "199"
+  }
+}

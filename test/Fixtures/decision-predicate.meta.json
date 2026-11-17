@@ -1,0 +1,26 @@
+{
+  "name": "decision-predicate",
+  "method": "POST",
+  "uri": "https://test-foundry.services.ai.azure.com/providers/microsoft/v1/systemone",
+  "auth": "Bearer",
+  "status": 200,
+  "elapsedMs": 114,
+  "headers": {
+    "X-Request-ID": "00000000-0000-0000-0000-000000000000",
+    "x-ms-client-request-id": "00000000-0000-0000-0000-000000000000",
+    "azureml-model-session": "d20261116175443-0d83e8e9",
+    "x-ratelimit-key": "Decision-1.1",
+    "x-ratelimit-remaining-requests": "49",
+    "x-ratelimit-reset-requests": "1",
+    "x-ratelimit-limit-requests": "50",
+    "x-ratelimit-renewalperiod-requests": "60",
+    "x-ratelimit-abusepenalty-active": "False",
+    "x-ratelimit-remaining-tokens": "49955",
+    "x-ratelimit-reset-tokens": "0",
+    "x-ratelimit-limit-tokens": "50000",
+    "x-ratelimit-renewalperiod-tokens": "60",
+    "apim-request-id": "00000000-0000-0000-0000-000000000000",
+    "x-ms-region": "Sweden Central",
+    "Content-Type": "application/json"
+  }
+}

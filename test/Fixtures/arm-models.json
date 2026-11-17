@@ -1,0 +1,432 @@
+{
+  "value": [
+    {
+      "format": "OpenAI",
+      "name": "sora-2",
+      "version": "2025-12-08",
+      "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-test/providers/Microsoft.CognitiveServices/accounts/test-foundry/models/OpenAI.sora-2.2025-12-08",
+      "type": "Microsoft.CognitiveServices/accounts/models",
+      "isDefaultVersion": true,
+      "skus": [
+        {
+          "name": "GlobalStandard",
+          "usageName": "OpenAI.GlobalStandard.sora-2",
+          "capacity": {
+            "maximum": 9999,
+            "default": 15
+          },
+          "deprecationDate": "2026-11-02T00:00:00Z",
+          "rateLimits": [
+            {
+              "key": "request",
+              "renewalPeriod": 60,
+              "count": 1
+            }
+          ],
+          "costs": [
+            {
+              "name": "R1280x720",
+              "meterId": "",
+              "unit": "1K Tokens",
+              "offeringId": "00000000-0000-0000-0000-000000000000"
+            }
+          ]
+        }
+      ],
+      "maxCapacity": 9999,
+      "capabilities": {
+        "videoGenerations": "true",
+        "area": "EUR"
+      },
+      "deprecation": {
+        "inference": "2026-11-02T00:00:00Z"
+      },
+      "lifecycleStatus": "Deprecated",
+      "systemData": {
+        "createdBy": "Microsoft",
+        "createdByType": "Application",
+        "createdAt": "2026-03-17T00:00:00Z",
+        "lastModifiedBy": "Microsoft",
+        "lastModifiedByType": "Application",
+        "lastModifiedAt": "2026-03-17T00:00:00Z"
+      }
+    },
+    {
+      "format": "OpenAI",
+      "name": "tts",
+      "version": "001",
+      "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-test/providers/Microsoft.CognitiveServices/accounts/test-foundry/models/OpenAI.tts.001",
+      "type": "Microsoft.CognitiveServices/accounts/models",
+      "isDefaultVersion": true,
+      "skus": [
+        {
+          "name": "Standard",
+          "usageName": "OpenAI.Standard.tts",
+          "capacity": {
+            "maximum": 9999,
+            "default": 20
+          },
+          "deprecationDate": "2027-01-20T00:00:00Z",
+          "rateLimits": [
+            {
+              "key": "request",
+              "renewalPeriod": 60,
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "maxCapacity": 9999,
+      "capabilities": {
+        "scaleType": "Standard",
+        "audio": "true",
+        "audioSpeech": "true",
+        "area": "EUR"
+      },
+      "deprecation": {
+        "inference": "2027-01-20T00:00:00Z"
+      },
+      "lifecycleStatus": "GenerallyAvailable",
+      "systemData": {
+        "createdBy": "Microsoft",
+        "createdByType": "Application",
+        "createdAt": "2023-11-20T00:00:00Z",
+        "lastModifiedBy": "Microsoft",
+        "lastModifiedByType": "Application",
+        "lastModifiedAt": "2023-11-20T00:00:00Z"
+      }
+    },
+    {
+      "format": "OpenAI",
+      "name": "text-embedding-3-small",
+      "version": "1",
+      "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-test/providers/Microsoft.CognitiveServices/accounts/test-foundry/models/OpenAI.text-embedding-3-small.1",
+      "type": "Microsoft.CognitiveServices/accounts/models",
+      "isDefaultVersion": true,
+      "skus": [
+        {
+          "name": "GlobalStandard",
+          "usageName": "OpenAI.GlobalStandard.text-embedding-3-small",
+          "capacity": {
+            "maximum": 1000000,
+            "default": 120
+          },
+          "deprecationDate": "2028-02-09T00:00:00Z",
+          "rateLimits": [
+            {
+              "key": "request",
+              "renewalPeriod": 10,
+              "count": 1
+            },
+            {
+              "key": "token",
+              "renewalPeriod": 60,
+              "count": 1000
+            }
+          ],
+          "costs": [
+            {
+              "name": "TotalToken",
+              "meterId": "",
+              "unit": "1K Tokens",
+              "offeringId": "00000000-0000-0000-0000-000000000000"
+            }
+          ]
+        },
+        {
+          "name": "DataZoneStandard",
+          "usageName": "OpenAI.DataZoneStandard.text-embedding-3-small",
+          "capacity": {
+            "maximum": 1000000,
+            "default": 120
+          },
+          "deprecationDate": "2028-02-09T00:00:00Z",
+          "rateLimits": [
+            {
+              "key": "request",
+              "renewalPeriod": 60,
+              "count": 1
+            },
+            {
+              "key": "token",
+              "renewalPeriod": 60,
+              "count": 1000
+            }
+          ],
+          "costs": [
+            {
+              "name": "TotalToken",
+              "meterId": "",
+              "unit": "1K Tokens",
+              "offeringId": "00000000-0000-0000-0000-000000000000"
+            }
+          ]
+        }
+      ],
+      "maxCapacity": 3,
+      "capabilities": {
+        "area": "EUR",
+        "embeddings": "true",
+        "embeddingsMaxInputs": "2048"
+      },
+      "deprecation": {
+        "inference": "2028-02-09T00:00:00Z"
+      },
+      "lifecycleStatus": "GenerallyAvailable",
+      "systemData": {
+        "createdBy": "Microsoft",
+        "createdByType": "Application",
+        "createdAt": "2024-01-25T00:00:00Z",
+        "lastModifiedBy": "Microsoft",
+        "lastModifiedByType": "Application",
+        "lastModifiedAt": "2024-01-25T00:00:00Z"
+      }
+    },
+    {
+      "publisher": "Cohere",
+      "format": "Cohere",
+      "name": "Cohere-embed-v3-english",
+      "version": "1",
+      "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-test/providers/Microsoft.CognitiveServices/accounts/test-foundry/models/Cohere.Cohere-embed-v3-english.1",
+      "type": "Microsoft.CognitiveServices/accounts/models",
+      "isDefaultVersion": true,
+      "skus": [
+        {
+          "name": "GlobalStandard",
+          "usageName": "AIServices.GlobalStandard.MaaS",
+          "capacity": {
+            "maximum": 1,
+            "default": 1
+          },
+          "deprecationDate": "2027-02-16T00:00:00Z"
+        }
+      ],
+      "maxCapacity": 3,
+      "capabilities": {},
+      "deprecation": {
+        "inference": "2027-02-16T00:00:00Z"
+      },
+      "lifecycleStatus": "GenerallyAvailable",
+      "systemData": {
+        "createdBy": "Microsoft",
+        "createdByType": "Application",
+        "createdAt": "2024-10-01T00:00:00Z",
+        "lastModifiedBy": "MaaSModelConverter",
+        "lastModifiedByType": "Application",
+        "lastModifiedAt": "2025-04-16T04:45:33.9367873Z"
+      }
+    },
+    {
+      "publisher": "Mistral AI",
+      "format": "Mistral AI",
+      "name": "Mistral-Large-3",
+      "version": "1",
+      "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-test/providers/Microsoft.CognitiveServices/accounts/test-foundry/models/Mistral AI.Mistral-Large-3.1",
+      "type": "Microsoft.CognitiveServices/accounts/models",
+      "isDefaultVersion": true,
+      "skus": [
+        {
+          "name": "GlobalStandard",
+          "usageName": "AIServices.GlobalStandard.Mistral-Large-3",
+          "capacity": {
+            "maximum": 100000,
+            "default": 5000
+          },
+          "deprecationDate": "2099-06-03T00:00:00Z",
+          "rateLimits": [
+            {
+              "key": "request",
+              "renewalPeriod": 60,
+              "count": 1
+            },
+            {
+              "key": "token",
+              "renewalPeriod": 60,
+              "count": 1000
+            }
+          ]
+        },
+        {
+          "name": "DataZoneStandard",
+          "usageName": "AIServices.DataZoneStandard.Mistral-Large-3",
+          "capacity": {
+            "maximum": 100000,
+            "default": 5000
+          },
+          "deprecationDate": "2099-06-03T00:00:00Z",
+          "rateLimits": [
+            {
+              "key": "request",
+              "renewalPeriod": 60,
+              "count": 1
+            },
+            {
+              "key": "token",
+              "renewalPeriod": 60,
+              "count": 1000
+            }
+          ]
+        }
+      ],
+      "maxCapacity": 3,
+      "capabilities": {
+        "area": "EUR",
+        "chatCompletion": "true"
+      },
+      "deprecation": {
+        "inference": "2099-06-03T00:00:00Z"
+      },
+      "lifecycleStatus": "GenerallyAvailable",
+      "systemData": {
+        "createdBy": "Microsoft",
+        "createdByType": "Application",
+        "createdAt": "2024-10-01T00:00:00Z",
+        "lastModifiedBy": "MaaSModelConverter",
+        "lastModifiedByType": "Application",
+        "lastModifiedAt": "2025-04-16T04:45:33.9367873Z"
+      }
+    },
+    {
+      "publisher": "Microsoft",
+      "format": "Microsoft",
+      "name": "Microsoft-Decision-1.1",
+      "version": "1",
+      "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-test/providers/Microsoft.CognitiveServices/accounts/test-foundry/models/Microsoft.Microsoft-Decision-1.1.1",
+      "type": "Microsoft.CognitiveServices/accounts/models",
+      "isDefaultVersion": true,
+      "skus": [
+        {
+          "name": "GlobalStandard",
+          "usageName": "AIServices.GlobalStandard.Microsoft-Decision-1.1",
+          "capacity": {
+            "maximum": 1000000,
+            "default": 500
+          },
+          "deprecationDate": "2099-06-03T00:00:00Z",
+          "rateLimits": [
+            {
+              "key": "request",
+              "renewalPeriod": 60,
+              "count": 1
+            },
+            {
+              "key": "token",
+              "renewalPeriod": 60,
+              "count": 1000
+            }
+          ]
+        },
+        {
+          "name": "DataZoneStandard",
+          "usageName": "AIServices.DataZoneStandard.Microsoft-Decision-1.1",
+          "capacity": {
+            "maximum": 1000000,
+            "default": 500
+          },
+          "deprecationDate": "2099-06-03T00:00:00Z",
+          "rateLimits": [
+            {
+              "key": "request",
+              "renewalPeriod": 60,
+              "count": 1
+            },
+            {
+              "key": "token",
+              "renewalPeriod": 60,
+              "count": 1000
+            }
+          ]
+        }
+      ],
+      "maxCapacity": 3,
+      "capabilities": {
+        "chatCompletion": "false",
+        "decision": "true",
+        "area": "EUR"
+      },
+      "deprecation": {
+        "inference": "2099-06-03T00:00:00Z"
+      },
+      "lifecycleStatus": "GenerallyAvailable",
+      "systemData": {
+        "createdBy": "Microsoft",
+        "createdByType": "Application",
+        "createdAt": "2026-11-05T00:00:00Z",
+        "lastModifiedBy": "MaaSModelConverter",
+        "lastModifiedByType": "Application",
+        "lastModifiedAt": "2026-11-05T00:00:00Z"
+      }
+    },
+    {
+      "publisher": "Microsoft",
+      "format": "Microsoft",
+      "name": "Microsoft-Decision-1",
+      "version": "1",
+      "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-test/providers/Microsoft.CognitiveServices/accounts/test-foundry/models/Microsoft.Microsoft-Decision-1.1",
+      "type": "Microsoft.CognitiveServices/accounts/models",
+      "isDefaultVersion": true,
+      "skus": [
+        {
+          "name": "GlobalStandard",
+          "usageName": "AIServices.GlobalStandard.Microsoft-Decision-1",
+          "capacity": {
+            "maximum": 1000000,
+            "default": 500
+          },
+          "deprecationDate": "2027-02-04T00:00:00Z",
+          "rateLimits": [
+            {
+              "key": "request",
+              "renewalPeriod": 60,
+              "count": 1
+            },
+            {
+              "key": "token",
+              "renewalPeriod": 60,
+              "count": 1000
+            }
+          ]
+        },
+        {
+          "name": "DataZoneStandard",
+          "usageName": "AIServices.DataZoneStandard.Microsoft-Decision-1",
+          "capacity": {
+            "maximum": 1000000,
+            "default": 500
+          },
+          "deprecationDate": "2027-02-04T00:00:00Z",
+          "rateLimits": [
+            {
+              "key": "request",
+              "renewalPeriod": 60,
+              "count": 1
+            },
+            {
+              "key": "token",
+              "renewalPeriod": 60,
+              "count": 1000
+            }
+          ]
+        }
+      ],
+      "maxCapacity": 3,
+      "capabilities": {
+        "chatCompletion": "false",
+        "decision": "true",
+        "area": "EUR"
+      },
+      "deprecation": {
+        "inference": "2027-02-04T00:00:00Z"
+      },
+      "lifecycleStatus": "Preview",
+      "systemData": {
+        "createdBy": "Microsoft",
+        "createdByType": "Application",
+        "createdAt": "2026-10-07T00:00:00Z",
+        "lastModifiedBy": "MaaSModelConverter",
+        "lastModifiedByType": "Application",
+        "lastModifiedAt": "2026-10-07T00:00:00Z"
+      }
+    }
+  ]
+}

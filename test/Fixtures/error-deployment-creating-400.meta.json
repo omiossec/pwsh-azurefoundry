@@ -1,0 +1,7 @@
+{
+  "name": "embedding-partner",
+  "status": 400,
+  "headers": {
+    "Content-Type": "application/json"
+  }
+}

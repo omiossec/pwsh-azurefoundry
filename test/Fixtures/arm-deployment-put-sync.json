@@ -1,0 +1,46 @@
+{
+  "id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-test/providers/Microsoft.CognitiveServices/accounts/test-foundry/deployments/spike-embed",
+  "type": "Microsoft.CognitiveServices/accounts/deployments",
+  "name": "spike-embed",
+  "sku": {
+    "name": "GlobalStandard",
+    "capacity": 1
+  },
+  "properties": {
+    "model": {
+      "format": "OpenAI",
+      "name": "text-embedding-3-small",
+      "version": "1"
+    },
+    "versionUpgradeOption": "OnceNewDefaultVersionAvailable",
+    "currentCapacity": 1,
+    "capabilities": {
+      "area": "EUR",
+      "embeddings": "true",
+      "embeddingsMaxInputs": "2048"
+    },
+    "raiPolicyName": "Microsoft.DefaultV2",
+    "provisioningState": "Succeeded",
+    "rateLimits": [
+      {
+        "key": "request",
+        "renewalPeriod": 10,
+        "count": 1
+      },
+      {
+        "key": "token",
+        "renewalPeriod": 60,
+        "count": 1000
+      }
+    ]
+  },
+  "systemData": {
+    "createdBy": "user@example.com",
+    "createdByType": "User",
+    "createdAt": "2026-11-17T21:59:21.0885889Z",
+    "lastModifiedBy": "user@example.com",
+    "lastModifiedByType": "User",
+    "lastModifiedAt": "2026-11-17T21:59:21.0885889Z"
+  },
+  "etag": "\"00000000-0000-0000-0000-000000000000\""
+}
