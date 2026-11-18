@@ -28,9 +28,11 @@ jobs:
 
       - name: Install build dependencies
         run: |
-          Set-PSResourceRepository -Name PSGallery -Trusted
-          Install-PSResource -Name Pester -Version '[5.5.0,6.0.0)' -Scope CurrentUser -Quiet
-          Install-PSResource -Name PSScriptAnalyzer -Version '[1.21.0,2.0.0)' -Scope CurrentUser -Quiet
+          # -TrustRepository instead of Set-PSResourceRepository: on a fresh Linux runner the
+          # PSResourceGet repository store does not exist yet and Set-PSResourceRepository fails.
+          $common = @{ Repository = 'PSGallery'; TrustRepository = $true; Scope = 'CurrentUser'; Quiet = $true }
+          Install-PSResource -Name Pester -Version '[5.5.0,6.0.0)' @common
+          Install-PSResource -Name PSScriptAnalyzer -Version '[1.21.0,2.0.0)' @common
 
       - name: Analyze, test and build
         run: ./build/build.ps1 -Task Analyze, Test, Build
