@@ -1,0 +1,8 @@
+{
+  "name": "synthetic-chat-content-filter",
+  "synthetic": "Written from the Azure OpenAI content filtering docs; not captured (phase 0.8).",
+  "status": 400,
+  "headers": {
+    "Content-Type": "application/json"
+  }
+}
