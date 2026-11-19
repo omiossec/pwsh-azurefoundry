@@ -58,3 +58,6 @@ nunit-*.xml
 
 # draft files
 *.draft.md
+
+# build output
+build/output/
