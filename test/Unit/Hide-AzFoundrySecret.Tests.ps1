@@ -23,6 +23,13 @@ Describe 'Hide-AzFoundrySecret' {
         }
     }
 
+    It 'masks the keys of an ARM listKeys response' {
+        InModuleScope PwshAzureFoundry {
+            $clean = Hide-AzFoundrySecret -Text '{ "key1": "Abc/123+x=", "KEY2":"def-456" }'
+            $clean | Should -Be '{ "key1": "***", "KEY2":"***" }'
+        }
+    }
+
     It 'returns null or empty text unchanged' {
         InModuleScope PwshAzureFoundry {
             Hide-AzFoundrySecret -Text '' -Secret 'x' | Should -BeExactly ''

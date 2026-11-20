@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Default views for PwshAzureFoundry.* output types. Views are added with each cmdlet (phases 4-6). -->
+<!-- Default views for PwshAzureFoundry.* output types. Views are added with each cmdlet (phases 3-6). -->
 <Configuration>
     <ViewDefinitions>
+        <View>
+            <Name>PwshAzureFoundry.Connection</Name>
+            <ViewSelectedBy>
+                <TypeName>PwshAzureFoundry.Connection</TypeName>
+            </ViewSelectedBy>
+            <TableControl>
+                <TableHeaders>
+                    <TableColumnHeader><Label>AccountName</Label></TableColumnHeader>
+                    <TableColumnHeader><Label>Endpoint</Label></TableColumnHeader>
+                    <TableColumnHeader><Label>AuthMode</Label></TableColumnHeader>
+                    <TableColumnHeader><Label>Source</Label></TableColumnHeader>
+                </TableHeaders>
+                <TableRowEntries>
+                    <TableRowEntry>
+                        <TableColumnItems>
+                            <TableColumnItem><PropertyName>AccountName</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>Endpoint</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>AuthMode</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>Source</PropertyName></TableColumnItem>
+                        </TableColumnItems>
+                    </TableRowEntry>
+                </TableRowEntries>
+            </TableControl>
+        </View>
     </ViewDefinitions>
 </Configuration>
