@@ -1,0 +1,10 @@
+{
+  "model": "Decision-1",
+  "state": "The payment integration still fails. Please help today.",
+  "questions": {
+    "urgent": {
+      "type": "noul",
+      "instructions": "Does this message convey urgency?"
+    }
+  }
+}
