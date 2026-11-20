@@ -42,7 +42,7 @@ Invoke-AzFoundryDecision -Model 'Decision-1.1' `
 # Models and deployments (Az.Accounts)
 Get-AzFoundryModel      -ResourceGroupName rg-lab -AccountName <resource>
 Get-AzFoundryDeployment -ResourceGroupName rg-lab -AccountName <resource>
-New-AzFoundryDeployment -ResourceGroupName rg-lab -AccountName <resource> -Name 'Mistral-Large-3' -ModelName 'Mistral-Large-3'
+New-AzFoundryDeployment -ResourceGroupName rg-lab -AccountName <resource> -ModelName 'Mistral-Large-3' -Capacity 20
 Get-AzFoundryEndpoint   -ResourceGroupName rg-lab -AccountName <resource>
 ```
 

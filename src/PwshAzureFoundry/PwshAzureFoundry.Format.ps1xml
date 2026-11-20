@@ -220,5 +220,88 @@
                 </TableRowEntries>
             </TableControl>
         </View>
+        <View>
+            <Name>PwshAzureFoundry.Model</Name>
+            <ViewSelectedBy>
+                <TypeName>PwshAzureFoundry.Model</TypeName>
+            </ViewSelectedBy>
+            <TableControl>
+                <TableHeaders>
+                    <TableColumnHeader><Label>Format</Label><Width>10</Width></TableColumnHeader>
+                    <TableColumnHeader><Label>Name</Label><Width>24</Width></TableColumnHeader>
+                    <TableColumnHeader><Label>Version</Label><Width>10</Width></TableColumnHeader>
+                    <TableColumnHeader><Label>Status</Label><Width>18</Width></TableColumnHeader>
+                    <TableColumnHeader><Label>Tasks</Label><Width>20</Width></TableColumnHeader>
+                    <TableColumnHeader><Label>Skus</Label></TableColumnHeader>
+                </TableHeaders>
+                <TableRowEntries>
+                    <TableRowEntry>
+                        <TableColumnItems>
+                            <TableColumnItem><PropertyName>Format</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>Name</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>Version</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>LifecycleStatus</PropertyName></TableColumnItem>
+                            <TableColumnItem><ScriptBlock>@($_.Tasks) -join ', '</ScriptBlock></TableColumnItem>
+                            <TableColumnItem><ScriptBlock>@($_.Skus) -join ', '</ScriptBlock></TableColumnItem>
+                        </TableColumnItems>
+                    </TableRowEntry>
+                </TableRowEntries>
+            </TableControl>
+        </View>
+        <View>
+            <Name>PwshAzureFoundry.Deployment</Name>
+            <ViewSelectedBy>
+                <TypeName>PwshAzureFoundry.Deployment</TypeName>
+            </ViewSelectedBy>
+            <TableControl>
+                <TableHeaders>
+                    <TableColumnHeader><Label>Name</Label><Width>24</Width></TableColumnHeader>
+                    <TableColumnHeader><Label>Model</Label><Width>26</Width></TableColumnHeader>
+                    <TableColumnHeader><Label>Version</Label><Width>12</Width></TableColumnHeader>
+                    <TableColumnHeader><Label>Sku</Label><Width>16</Width></TableColumnHeader>
+                    <TableColumnHeader><Label>Capacity</Label><Width>8</Width><Alignment>Right</Alignment></TableColumnHeader>
+                    <TableColumnHeader><Label>State</Label></TableColumnHeader>
+                </TableHeaders>
+                <TableRowEntries>
+                    <TableRowEntry>
+                        <TableColumnItems>
+                            <TableColumnItem><PropertyName>Name</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>ModelName</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>Version</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>Sku</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>Capacity</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>ProvisioningState</PropertyName></TableColumnItem>
+                        </TableColumnItems>
+                    </TableRowEntry>
+                </TableRowEntries>
+            </TableControl>
+        </View>
+        <View>
+            <Name>PwshAzureFoundry.Endpoint</Name>
+            <ViewSelectedBy>
+                <TypeName>PwshAzureFoundry.Endpoint</TypeName>
+            </ViewSelectedBy>
+            <ListControl>
+                <ListEntries>
+                    <ListEntry>
+                        <ListItems>
+                            <ListItem><PropertyName>AccountName</PropertyName></ListItem>
+                            <ListItem><PropertyName>ResourceGroupName</PropertyName></ListItem>
+                            <ListItem><PropertyName>Location</PropertyName></ListItem>
+                            <ListItem><PropertyName>Endpoint</PropertyName></ListItem>
+                            <ListItem><PropertyName>OpenAIEndpoint</PropertyName></ListItem>
+                            <ListItem><PropertyName>ChatCompletionsUri</PropertyName></ListItem>
+                            <ListItem><PropertyName>EmbeddingsUri</PropertyName></ListItem>
+                            <ListItem><PropertyName>DecisionUri</PropertyName></ListItem>
+                            <ListItem><PropertyName>DisableLocalAuth</PropertyName></ListItem>
+                            <ListItem>
+                                <Label>Keys</Label>
+                                <ScriptBlock>if ($_.PSObject.Properties['Key1']) { 'Key1, Key2 (SecureString)' } else { '(use -IncludeKey)' }</ScriptBlock>
+                            </ListItem>
+                        </ListItems>
+                    </ListEntry>
+                </ListEntries>
+            </ListControl>
+        </View>
     </ViewDefinitions>
 </Configuration>

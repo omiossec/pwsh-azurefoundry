@@ -20,6 +20,10 @@ $script:AzFoundryArmApiVersion      = '2025-06-01'
 $script:AzFoundryArmPollIntervalSec = 5      # used when an async response has no Retry-After header
 $script:AzFoundryArmPollTimeoutSec  = 1800
 
+# Readiness check of New-AzFoundryDeployment: the data plane answers 404 for about 20 s after Succeeded (spike).
+$script:AzFoundryReadinessTimeoutSec  = 180
+$script:AzFoundryReadinessIntervalSec = 5
+
 # HTTP behaviour (spec section 8). MaxRetry is the number of retries after the first attempt.
 $script:AzFoundryMaxRetry             = 3
 $script:AzFoundryMaxRetryDelaySec     = 60
