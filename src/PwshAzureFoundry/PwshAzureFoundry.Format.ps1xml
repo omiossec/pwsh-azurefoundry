@@ -26,5 +26,130 @@
                 </TableRowEntries>
             </TableControl>
         </View>
+        <!-- Chat result: Content wraps so the answer stays readable in a console screenshot. -->
+        <View>
+            <Name>PwshAzureFoundry.ChatResult</Name>
+            <ViewSelectedBy>
+                <TypeName>PwshAzureFoundry.ChatResult</TypeName>
+            </ViewSelectedBy>
+            <TableControl>
+                <TableHeaders>
+                    <TableColumnHeader><Label>FinishReason</Label><Width>12</Width></TableColumnHeader>
+                    <TableColumnHeader><Label>Tokens</Label><Width>6</Width><Alignment>Right</Alignment></TableColumnHeader>
+                    <TableColumnHeader><Label>Content</Label></TableColumnHeader>
+                </TableHeaders>
+                <TableRowEntries>
+                    <TableRowEntry>
+                        <Wrap/>
+                        <TableColumnItems>
+                            <TableColumnItem><PropertyName>FinishReason</PropertyName></TableColumnItem>
+                            <TableColumnItem><ScriptBlock>$_.Usage.TotalTokens</ScriptBlock></TableColumnItem>
+                            <TableColumnItem>
+                                <ScriptBlock>
+                                    if ($null -ne $_.Content -and $_.Content -ne '') { $_.Content }
+                                    elseif ($_.ToolCalls) { '[tool calls: ' + (@($_.ToolCalls.Name) -join ', ') + ']' }
+                                </ScriptBlock>
+                            </TableColumnItem>
+                        </TableColumnItems>
+                    </TableRowEntry>
+                </TableRowEntries>
+            </TableControl>
+        </View>
+        <View>
+            <Name>PwshAzureFoundry.ChatChunk</Name>
+            <ViewSelectedBy>
+                <TypeName>PwshAzureFoundry.ChatChunk</TypeName>
+            </ViewSelectedBy>
+            <TableControl>
+                <TableHeaders>
+                    <TableColumnHeader><Label>Index</Label><Width>5</Width><Alignment>Right</Alignment></TableColumnHeader>
+                    <TableColumnHeader><Label>FinishReason</Label><Width>12</Width></TableColumnHeader>
+                    <TableColumnHeader><Label>Content</Label></TableColumnHeader>
+                </TableHeaders>
+                <TableRowEntries>
+                    <TableRowEntry>
+                        <TableColumnItems>
+                            <TableColumnItem><PropertyName>Index</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>FinishReason</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>Content</PropertyName></TableColumnItem>
+                        </TableColumnItems>
+                    </TableRowEntry>
+                </TableRowEntries>
+            </TableControl>
+        </View>
+        <View>
+            <Name>PwshAzureFoundry.ToolCall</Name>
+            <ViewSelectedBy>
+                <TypeName>PwshAzureFoundry.ToolCall</TypeName>
+            </ViewSelectedBy>
+            <TableControl>
+                <TableHeaders>
+                    <TableColumnHeader><Label>Id</Label></TableColumnHeader>
+                    <TableColumnHeader><Label>Name</Label></TableColumnHeader>
+                    <TableColumnHeader><Label>ArgumentsJson</Label></TableColumnHeader>
+                </TableHeaders>
+                <TableRowEntries>
+                    <TableRowEntry>
+                        <TableColumnItems>
+                            <TableColumnItem><PropertyName>Id</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>Name</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>ArgumentsJson</PropertyName></TableColumnItem>
+                        </TableColumnItems>
+                    </TableRowEntry>
+                </TableRowEntries>
+            </TableControl>
+        </View>
+        <!-- Classes: the view is selected by the .NET type name of the PowerShell class. -->
+        <View>
+            <Name>AzFoundryMessage</Name>
+            <ViewSelectedBy>
+                <TypeName>AzFoundryMessage</TypeName>
+            </ViewSelectedBy>
+            <TableControl>
+                <TableHeaders>
+                    <TableColumnHeader><Label>Role</Label><Width>9</Width></TableColumnHeader>
+                    <TableColumnHeader><Label>Content</Label></TableColumnHeader>
+                </TableHeaders>
+                <TableRowEntries>
+                    <TableRowEntry>
+                        <Wrap/>
+                        <TableColumnItems>
+                            <TableColumnItem><PropertyName>Role</PropertyName></TableColumnItem>
+                            <TableColumnItem>
+                                <ScriptBlock>
+                                    if ($_.ToolCalls) { '[tool calls: ' + (@($_.ToolCalls | ForEach-Object { if ($_.Name) { $_.Name } else { $_.function.name } }) -join ', ') + ']' }
+                                    elseif ($_.ToolCallId) { '(' + $_.ToolCallId + ') ' + $_.Content }
+                                    else { $_.Content }
+                                </ScriptBlock>
+                            </TableColumnItem>
+                        </TableColumnItems>
+                    </TableRowEntry>
+                </TableRowEntries>
+            </TableControl>
+        </View>
+        <View>
+            <Name>AzFoundryTool</Name>
+            <ViewSelectedBy>
+                <TypeName>AzFoundryTool</TypeName>
+            </ViewSelectedBy>
+            <TableControl>
+                <TableHeaders>
+                    <TableColumnHeader><Label>Name</Label></TableColumnHeader>
+                    <TableColumnHeader><Label>Description</Label></TableColumnHeader>
+                    <TableColumnHeader><Label>Arguments</Label></TableColumnHeader>
+                </TableHeaders>
+                <TableRowEntries>
+                    <TableRowEntry>
+                        <TableColumnItems>
+                            <TableColumnItem><PropertyName>Name</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>Description</PropertyName></TableColumnItem>
+                            <TableColumnItem>
+                                <ScriptBlock>if ($_.Parameters -and $_.Parameters['properties']) { @($_.Parameters['properties'].Keys) -join ', ' }</ScriptBlock>
+                            </TableColumnItem>
+                        </TableColumnItems>
+                    </TableRowEntry>
+                </TableRowEntries>
+            </TableControl>
+        </View>
     </ViewDefinitions>
 </Configuration>

@@ -12,7 +12,10 @@
     FormatsToProcess     = @('PwshAzureFoundry.Format.ps1xml')
 
     # Explicit list, no wildcards. Module.Tests.ps1 checks it matches Public/*.ps1.
-    FunctionsToExport    = @('Connect-AzFoundry', 'Disconnect-AzFoundry', 'Get-AzFoundryConnection')
+    FunctionsToExport    = @(
+        'Connect-AzFoundry', 'Disconnect-AzFoundry', 'Get-AzFoundryConnection',
+        'Invoke-AzFoundryChat', 'New-AzFoundryMessage', 'New-AzFoundryTool'
+    )
     CmdletsToExport      = @()
     VariablesToExport    = @()
     AliasesToExport      = @()
