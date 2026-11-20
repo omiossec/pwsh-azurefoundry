@@ -10,6 +10,11 @@ API. Sister project of `PwshFoundry` (Foundry Local), and follows the same conve
 Design docs (local, git-ignored): `Specifications.draft.md`, `Plan.draft.md`, `Article.draft.md`.
 Read them before implementing anything.
 
+`check.draft.md` (local, git-ignored) is the manual functional check list: every public cmdlet and every way
+to call it (each parameter set, pipeline input, `-WhatIf`, error cases), with the expected result. **Update it
+in the same change as any public cmdlet** (added, removed, or parameters changed): status table, then the
+cmdlet's section. Every example runs with `-Verbose`.
+
 The module backs a **dev.to article** on connecting to and managing Foundry models from PowerShell.
 `samples/article/*.ps1` are the article's snippets: keep them short and copy-paste runnable, and
 never change them without updating `test/Integration/Article.Tests.ps1` and the article draft.

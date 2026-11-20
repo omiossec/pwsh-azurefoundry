@@ -1,0 +1,11 @@
+{
+  "name": "synthetic-chat-429",
+  "synthetic": "Written from the Azure OpenAI docs; no 429 could be reproduced on the lab resource (phase 0.8).",
+  "status": 429,
+  "headers": {
+    "Retry-After": "6",
+    "retry-after-ms": "6000",
+    "x-ratelimit-remaining-requests": "0",
+    "Content-Type": "application/json"
+  }
+}

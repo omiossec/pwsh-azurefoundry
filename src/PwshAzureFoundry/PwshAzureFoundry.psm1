@@ -4,19 +4,27 @@
 # Active connection set by Connect-AzFoundry (AzFoundryConnection), cleared by Disconnect-AzFoundry.
 $script:AzFoundryConnection = $null
 
-# Entra ID token cache for data-plane calls: @{ Token = [SecureString]; ExpiresOn = [datetimeoffset] }.
-$script:AzFoundryTokenCache = $null
+# Entra ID token cache, shared by data-plane and ARM calls. Key: '<resource>|<account>|<tenant>'.
+# Value: [pscustomobject]@{ Token = [SecureString]; ExpiresOn = [datetimeoffset] }. Refreshed 5 min before expiry.
+$script:AzFoundryTokenCache = @{}
 
 # Entra scope for data-plane tokens (spec section 2.1: both cognitiveservices and ai.azure.com work).
 $script:AzFoundryTokenScope = 'https://cognitiveservices.azure.com/.default'
 
-# ARM management plane (spec sections 2.1 and 4.2). Sovereign clouds are out of scope for v1.
-$script:AzFoundryArmBaseUri    = 'https://management.azure.com'
-$script:AzFoundryArmApiVersion = '2025-06-01'
+# Az.Accounts is a soft dependency (management cmdlets and Entra ID auth only).
+$script:AzFoundryAzAccountsMinVersion = '2.13.0'
 
-# HTTP behaviour (spec section 8).
-$script:AzFoundryMaxRetry          = 3
-$script:AzFoundryDefaultTimeoutSec = 120
+# ARM management plane (spec sections 2.1 and 4.2). Sovereign clouds are out of scope for v1.
+$script:AzFoundryArmBaseUri         = 'https://management.azure.com'
+$script:AzFoundryArmApiVersion      = '2025-06-01'
+$script:AzFoundryArmPollIntervalSec = 5      # used when an async response has no Retry-After header
+$script:AzFoundryArmPollTimeoutSec  = 1800
+
+# HTTP behaviour (spec section 8). MaxRetry is the number of retries after the first attempt.
+$script:AzFoundryMaxRetry             = 3
+$script:AzFoundryMaxRetryDelaySec     = 60
+$script:AzFoundryRetryableStatusCodes = @(429, 500, 502, 503, 504)
+$script:AzFoundryDefaultTimeoutSec    = 120
 
 # Environment variable fallback (spec section 4.1).
 $script:AzFoundryEndpointEnvVar = 'AZURE_FOUNDRY_ENDPOINT'
