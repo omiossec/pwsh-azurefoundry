@@ -6,7 +6,8 @@ function Hide-AzFoundrySecret {
         Masks secrets in a text before it is logged or put in an error message.
     .DESCRIPTION
         Replaces every occurrence of the given secret values with '***', then masks anything that looks
-        like a bearer token or an api-key header value. Used on debug output and on service error
+        like a bearer token, an api-key header value or a key1/key2 value of an ARM listKeys
+        response. Used on debug output and on service error
         messages, as a second line of defence: the module never puts a secret in a text on purpose.
     .PARAMETER Text
         Text to clean.
@@ -40,5 +41,7 @@ function Hide-AzFoundrySecret {
     }
 
     $clean = $clean -replace '(?i)(bearer\s+)[A-Za-z0-9\-_.~+/=]{8,}', '$1***'
+    # ARM listKeys response body: {"key1":"...","key2":"..."}.
+    $clean = $clean -replace '(?i)("key[12]"\s*:\s*")[^"]+', '$1***'
     $clean -replace '(?i)("?api-key"?\s*[:=]\s*"?)[A-Za-z0-9]{8,}', '$1***'
 }
