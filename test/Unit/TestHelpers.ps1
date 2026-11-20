@@ -60,3 +60,34 @@ function New-TestSecureString {
     param([Parameter(Mandatory)][string]$Value)
     ConvertTo-SecureString -String $Value -AsPlainText -Force
 }
+
+# JSON with object keys sorted at every level, to compare request bodies whatever the key order.
+function ConvertTo-TestCanonicalJson {
+    param([Parameter(Mandatory)][AllowNull()][object]$InputObject)
+    $json = if ($InputObject -is [string]) { $InputObject } else { ConvertTo-Json -InputObject $InputObject -Depth 30 }
+    $parsed = ConvertFrom-Json -InputObject $json -AsHashtable -Depth 30
+    ConvertTo-Json -InputObject (ConvertTo-TestSortedObject $parsed) -Depth 30 -Compress
+}
+
+function ConvertTo-TestSortedObject {
+    param([AllowNull()][object]$Value)
+    if ($Value -is [System.Collections.IDictionary]) {
+        $sorted = [ordered]@{}
+        foreach ($key in @($Value.Keys) | Sort-Object) { $sorted[$key] = ConvertTo-TestSortedObject $Value[$key] }
+        return $sorted
+    }
+    if ($Value -is [System.Collections.IList]) {
+        return , @(foreach ($item in $Value) { ConvertTo-TestSortedObject $item })
+    }
+    return $Value
+}
+
+# Captures the output of an SSE stream fixture as the parsed chunks Invoke-AzFoundryStreamRequest would output.
+function Get-TestStreamChunk {
+    param([Parameter(Mandatory)][string]$Name)
+    foreach ($line in (Get-TestFixture $Name) -split "`r?`n") {
+        if ($line -match '^data: (.+)$' -and $Matches[1] -ne '[DONE]') {
+            ConvertFrom-Json -InputObject $Matches[1] -Depth 100
+        }
+    }
+}

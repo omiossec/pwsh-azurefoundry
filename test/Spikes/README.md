@@ -6,6 +6,7 @@ They are not part of the module or of the test suite.
 | Script | Purpose |
 |---|---|
 | `Invoke-DataPlaneSpike.ps1` | Calls chat (hosts × auth headers), streaming, decision, errors, and Entra scopes; saves raw responses |
+| `Invoke-ToolCallSpike.ps1` | Phase 4: tool calling (`tool_choice` forms, parallel calls, round trip, streamed `tool_calls` deltas); Entra auth |
 | `ConvertTo-SanitizedFixture.ps1` | Copies raw captures to `test/Fixtures/`, replacing GUIDs, emails, account/RG/project names and keys |
 
 ```powershell
