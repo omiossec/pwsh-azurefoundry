@@ -14,7 +14,8 @@
     # Explicit list, no wildcards. Module.Tests.ps1 checks it matches Public/*.ps1.
     FunctionsToExport    = @(
         'Connect-AzFoundry', 'Disconnect-AzFoundry', 'Get-AzFoundryConnection',
-        'Invoke-AzFoundryChat', 'New-AzFoundryMessage', 'New-AzFoundryTool'
+        'Invoke-AzFoundryChat', 'New-AzFoundryMessage', 'New-AzFoundryTool',
+        'Invoke-AzFoundryEmbedding', 'Invoke-AzFoundryDecision'
     )
     CmdletsToExport      = @()
     VariablesToExport    = @()

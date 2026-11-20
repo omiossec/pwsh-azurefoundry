@@ -151,5 +151,74 @@
                 </TableRowEntries>
             </TableControl>
         </View>
+        <View>
+            <Name>PwshAzureFoundry.Embedding</Name>
+            <ViewSelectedBy>
+                <TypeName>PwshAzureFoundry.Embedding</TypeName>
+            </ViewSelectedBy>
+            <TableControl>
+                <TableHeaders>
+                    <TableColumnHeader><Label>Index</Label><Width>5</Width><Alignment>Right</Alignment></TableColumnHeader>
+                    <TableColumnHeader><Label>Dimensions</Label><Width>10</Width><Alignment>Right</Alignment></TableColumnHeader>
+                    <TableColumnHeader><Label>Vector</Label><Width>36</Width></TableColumnHeader>
+                    <TableColumnHeader><Label>Text</Label></TableColumnHeader>
+                </TableHeaders>
+                <TableRowEntries>
+                    <TableRowEntry>
+                        <TableColumnItems>
+                            <TableColumnItem><PropertyName>Index</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>Dimensions</PropertyName></TableColumnItem>
+                            <TableColumnItem>
+                                <ScriptBlock>
+                                    $first = @($_.Vector | Select-Object -First 3 | ForEach-Object { $_.ToString('0.0000', [cultureinfo]::InvariantCulture) })
+                                    '[' + ($first -join ', ') + $(if ($_.Vector.Length -gt 3) { ', ...' }) + ']'
+                                </ScriptBlock>
+                            </TableColumnItem>
+                            <TableColumnItem><PropertyName>Text</PropertyName></TableColumnItem>
+                        </TableColumnItems>
+                    </TableRowEntry>
+                </TableRowEntries>
+            </TableControl>
+        </View>
+        <View>
+            <Name>PwshAzureFoundry.DecisionAnswer</Name>
+            <ViewSelectedBy>
+                <TypeName>PwshAzureFoundry.DecisionAnswer</TypeName>
+            </ViewSelectedBy>
+            <TableControl>
+                <TableHeaders>
+                    <TableColumnHeader><Label>Question</Label><Width>16</Width></TableColumnHeader>
+                    <TableColumnHeader><Label>Type</Label><Width>6</Width></TableColumnHeader>
+                    <TableColumnHeader><Label>Answer</Label><Width>16</Width></TableColumnHeader>
+                    <TableColumnHeader><Label>Value</Label><Width>6</Width><Alignment>Right</Alignment></TableColumnHeader>
+                    <TableColumnHeader><Label>Confidence</Label><Width>10</Width><Alignment>Right</Alignment></TableColumnHeader>
+                    <TableColumnHeader><Label>Probabilities</Label></TableColumnHeader>
+                </TableHeaders>
+                <TableRowEntries>
+                    <TableRowEntry>
+                        <TableColumnItems>
+                            <TableColumnItem><PropertyName>Question</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>Type</PropertyName></TableColumnItem>
+                            <TableColumnItem><PropertyName>Answer</PropertyName></TableColumnItem>
+                            <TableColumnItem>
+                                <ScriptBlock>if ($null -ne $_.Value) { $_.Value.ToString('0.###', [cultureinfo]::InvariantCulture) }</ScriptBlock>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <ScriptBlock>if ($null -ne $_.Confidence) { $_.Confidence.ToString('P1', [cultureinfo]::InvariantCulture) }</ScriptBlock>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <ScriptBlock>
+                                    if ($_.Probabilities) {
+                                        @(foreach ($key in $_.Probabilities.Keys) {
+                                            '{0} {1}' -f $key, $_.Probabilities[$key].ToString('P0', [cultureinfo]::InvariantCulture)
+                                        }) -join ', '
+                                    }
+                                </ScriptBlock>
+                            </TableColumnItem>
+                        </TableColumnItems>
+                    </TableRowEntry>
+                </TableRowEntries>
+            </TableControl>
+        </View>
     </ViewDefinitions>
 </Configuration>

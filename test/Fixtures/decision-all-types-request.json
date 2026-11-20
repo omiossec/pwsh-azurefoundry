@@ -1,0 +1,9 @@
+{
+  "model": "Decision-1.1",
+  "state": { "subject": "Charged twice", "body": "My invoice is wrong, I was charged twice this month. Fix it now!" },
+  "questions": {
+    "billing": { "type": "noul", "instructions": "Is this ticket about billing?" },
+    "team": { "type": "choice", "criteria": { "sales": "Sales", "support": "Support", "finance": "Finance" } },
+    "priority": { "type": "score", "criteria": ["low", "medium", "high"] }
+  }
+}
