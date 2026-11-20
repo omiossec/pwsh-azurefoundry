@@ -61,3 +61,6 @@ nunit-*.xml
 
 # build output
 build/output/
+
+# integration test reports (the .md summaries are committed)
+test/Integration/results/*.xml
