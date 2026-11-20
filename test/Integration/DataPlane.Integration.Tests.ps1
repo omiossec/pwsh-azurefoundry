@@ -131,10 +131,27 @@ Describe 'Data plane with an API key' -Tag 'Integration' -Skip:(-not $setting.Ha
             $result.ToolCalls[0].Arguments['city'] | Should -Match 'Paris'
         }
 
-        It 'forces one function with -ToolChoice <name>' {
-            $result = Invoke-AzFoundryChat -Model $chatModel -Prompt 'Is it raining in Lyon?' -Tool $weather `
-                -ToolChoice get_weather -MaxTokens 200
+        # No angle brackets in titles: Pester expands <name> from any variable in scope.
+        It 'forces one function by name, or hints at -ToolChoice required when the model refuses' {
+            try {
+                $result = Invoke-AzFoundryChat -Model $chatModel -Prompt 'Is it raining in Lyon?' -Tool $weather `
+                    -ToolChoice get_weather -MaxTokens 200
+            } catch {
+                # Mistral-Large-3 answers 422 (integration run of 2026-11-20): check the hint, then report it.
+                $_.CategoryInfo.Category | Should -Be 'InvalidArgument'
+                $_.ErrorDetails.RecommendedAction | Should -Match '-ToolChoice required'
+                Set-ItResult -Inconclusive -Because "$chatModel does not support forcing a function by name"
+                return
+            }
             $result.ToolCalls[0].Name | Should -Be 'get_weather'
+        }
+
+        It 'forces one function with -ToolChoice required and a single tool' {
+            $result = Invoke-AzFoundryChat -Model $chatModel -Prompt 'Is it raining in Lyon?' -Tool $weather `
+                -ToolChoice required -MaxTokens 200
+            $result.ToolCalls.Count | Should -Be 1
+            $result.ToolCalls[0].Name | Should -Be 'get_weather'
+            $result.ToolCalls[0].Arguments['city'] | Should -Match 'Lyon'
         }
 
         It 'answers in text after the tool results are sent back' {
