@@ -91,3 +91,74 @@ function Get-TestStreamChunk {
         }
     }
 }
+
+# --- Management plane fake ----------------------------------------------------------------------------------------
+# Call Initialize-TestArm in BeforeEach: it mocks the Az context, the tokens, Start-Sleep and Send-AzFoundryHttpRequest.
+# The fake answers each request with the first route whose method matches and whose regex matches the full URI;
+# a route with several responses returns them in order and then repeats the last one. Every call is recorded in
+# $global:AzFoundryTestArmCalls ({ Method, Uri, Body (parsed JSON or $null), Headers }).
+$script:TestSubscriptionId = '00000000-0000-0000-0000-000000000000'
+$script:TestAccountPath = "/subscriptions/$script:TestSubscriptionId/resourceGroups/rg-test/providers/" +
+    'Microsoft.CognitiveServices/accounts/test-foundry'
+$script:TestArmTarget = @{
+    ResourceGroupName = 'rg-test'
+    AccountName       = 'test-foundry'
+    SubscriptionId    = $script:TestSubscriptionId
+}
+
+function Initialize-TestArm {
+    $global:AzFoundryTestArmRoutes = [System.Collections.Generic.List[object]]::new()
+    $global:AzFoundryTestArmCalls = [System.Collections.Generic.List[object]]::new()
+
+    Mock -ModuleName PwshAzureFoundry Import-AzFoundryAzAccounts {}
+    Mock -ModuleName PwshAzureFoundry Get-AzContext {
+        [pscustomobject]@{
+            Account      = [pscustomobject]@{ Id = 'user@example.com' }
+            Subscription = [pscustomobject]@{ Id = '11111111-1111-1111-1111-111111111111' }
+        }
+    }
+    Mock -ModuleName PwshAzureFoundry Get-AzFoundryAccessToken {
+        [pscustomobject]@{
+            Token     = ConvertTo-SecureString 'arm-token-0123456789' -AsPlainText -Force
+            ExpiresOn = [datetimeoffset]::UtcNow.AddHours(1)
+        }
+    }
+    Mock -ModuleName PwshAzureFoundry Start-Sleep {}
+    Mock -ModuleName PwshAzureFoundry Send-AzFoundryHttpRequest {
+        $Body = Get-Variable -Name Body -ValueOnly -ErrorAction Ignore
+        $Headers = Get-Variable -Name Headers -ValueOnly -ErrorAction Ignore
+        $parsed = if ($Body) { $Body | ConvertFrom-Json -Depth 50 }
+        $global:AzFoundryTestArmCalls.Add([pscustomobject]@{
+                Method = $Method; Uri = [string]$Uri; Body = $parsed; Headers = $Headers
+            })
+        foreach ($route in $global:AzFoundryTestArmRoutes) {
+            if ($route.Method -eq $Method -and [string]$Uri -match $route.Pattern) {
+                if ($route.Queue.Count -gt 1) { return $route.Queue.Dequeue() }
+                return $route.Queue.Peek()
+            }
+        }
+        throw "No fake ARM route for $Method $Uri"
+    }
+}
+
+function Add-TestArmRoute {
+    param(
+        [Parameter(Mandatory)][string]$Method,
+        [Parameter(Mandatory)][string]$Pattern,
+        [Parameter(Mandatory)][object[]]$Response
+    )
+    $queue = [System.Collections.Generic.Queue[object]]::new()
+    foreach ($item in $Response) { $queue.Enqueue($item) }
+    $global:AzFoundryTestArmRoutes.Add([pscustomobject]@{ Method = $Method; Pattern = $Pattern; Queue = $queue })
+}
+
+# The calls whose method matches and whose URI matches the regex.
+function Get-TestArmCall {
+    param([string]$Method, [string]$Pattern = '.')
+    @($global:AzFoundryTestArmCalls | Where-Object { (-not $Method -or $_.Method -eq $Method) -and $_.Uri -match $Pattern })
+}
+
+function Clear-TestArm {
+    Remove-Variable -Name AzFoundryTestArmRoutes, AzFoundryTestArmCalls -Scope Global -ErrorAction Ignore
+    InModuleScope PwshAzureFoundry { $script:AzFoundryConnection = $null }
+}

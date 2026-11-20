@@ -15,7 +15,9 @@
     FunctionsToExport    = @(
         'Connect-AzFoundry', 'Disconnect-AzFoundry', 'Get-AzFoundryConnection',
         'Invoke-AzFoundryChat', 'New-AzFoundryMessage', 'New-AzFoundryTool',
-        'Invoke-AzFoundryEmbedding', 'Invoke-AzFoundryDecision'
+        'Invoke-AzFoundryEmbedding', 'Invoke-AzFoundryDecision',
+        'Get-AzFoundryModel', 'Get-AzFoundryDeployment', 'New-AzFoundryDeployment', 'Remove-AzFoundryDeployment',
+        'Get-AzFoundryEndpoint'
     )
     CmdletsToExport      = @()
     VariablesToExport    = @()
