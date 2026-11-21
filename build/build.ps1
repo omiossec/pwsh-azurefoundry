@@ -131,7 +131,7 @@ function Invoke-BuildTask {
     $null = New-Item -Path $moduleOutDir -ItemType Directory -Force
 
     Copy-Item -Path (Join-Path $sourceDir '*') -Destination $moduleOutDir -Recurse
-    Get-ChildItem -LiteralPath $moduleOutDir -Recurse -File -Filter '.gitkeep' | Remove-Item -Force
+    Get-ChildItem -LiteralPath $moduleOutDir -Recurse -File -Force -Filter '.gitkeep' | Remove-Item -Force
 
     # Only module code ships: a stray .env, fixture or draft under src/ must fail the build, not reach the Gallery
     $allowed = '.ps1', '.psm1', '.psd1', '.ps1xml'

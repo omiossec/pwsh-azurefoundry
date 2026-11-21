@@ -9,22 +9,6 @@ stable versions are published to the PowerShell Gallery.
 
 ## [Unreleased]
 
-### Added
-
-- Release workflow (`.github/workflows/release.yml`): on a `v*` tag, checks the tag against the manifest,
-  runs analyze, tests and build, and uploads the module as an artifact. Stable tags are then published to
-  the PowerShell Gallery.
-
-### Security
-
-- The session key is no longer reused for an endpoint of the same account on a non-default port.
-- `Get-AzFoundryDeployment -Name` rejects `.` and `..`; `-ResourceGroupName` rejects names ending with a period
-  (all cmdlets).
-- The build fails when anything other than module code (`.ps1`, `.psm1`, `.psd1`, `.ps1xml`) would be packaged.
-- Samples: `deploy-and-call.ps1` refuses an existing deployment name (`sample-*` only) and cleans up even when the
-  deployment fails; `decision-triage.ps1` escapes formula characters in ticket text; parameter validation and a
-  tool-argument check in the other samples.
-
 ## [0.1.0-alpha] - 2026-11-21
 
 First pre-release.
@@ -43,6 +27,21 @@ First pre-release.
 - Service error mapping, retry on 429 honouring `Retry-After`, and `Authorization` / `api-key` redaction
   in `-Debug` output.
 - Formatting views, cmdlet reference (`docs/`), samples and integration tests.
+- Release workflow (`.github/workflows/release.yml`): on a `v*` tag, checks the tag against the manifest,
+  runs analyze, tests and build, and uploads the module as an artifact. Stable tags are then published to
+  the PowerShell Gallery.
+
+### Security
+
+From the phase 9 review of the module and the samples:
+
+- The session key is never reused for an endpoint of the same account on a non-default port.
+- `Get-AzFoundryDeployment -Name` rejects `.` and `..`; `-ResourceGroupName` rejects names ending with a period
+  (all cmdlets).
+- The build fails when anything other than module code (`.ps1`, `.psm1`, `.psd1`, `.ps1xml`) would be packaged.
+- Samples: `deploy-and-call.ps1` refuses an existing deployment name (`sample-*` only) and cleans up even when the
+  deployment fails; `decision-triage.ps1` escapes formula characters in ticket text; parameter validation and a
+  tool-argument check in the other samples.
 
 [Unreleased]: https://github.com/omiossec/pwsh-azurefoundry/compare/v0.1.0-alpha...HEAD
 [0.1.0-alpha]: https://github.com/omiossec/pwsh-azurefoundry/releases/tag/v0.1.0-alpha
