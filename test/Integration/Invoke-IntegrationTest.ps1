@@ -38,9 +38,9 @@ $stamp = '{0:yyyyMMdd-HHmmss}' -f [datetime]::UtcNow
 $xmlPath = Join-Path $OutputPath "$stamp.xml"
 $summaryPath = Join-Path $OutputPath "$stamp.md"
 
-foreach ($name in 'AZURE_FOUNDRY_ENDPOINT', 'AZURE_FOUNDRY_API_KEY', 'AZURE_FOUNDRY_RG', 'AZURE_FOUNDRY_ACCOUNT') {
-    if (-not [Environment]::GetEnvironmentVariable($name)) {
-        Write-Warning "$name is not set: the tests that need it are skipped."
+foreach ($variable in 'AZURE_FOUNDRY_ENDPOINT', 'AZURE_FOUNDRY_API_KEY', 'AZURE_FOUNDRY_RG', 'AZURE_FOUNDRY_ACCOUNT') {
+    if (-not [Environment]::GetEnvironmentVariable($variable)) {
+        Write-Warning "$variable is not set: the tests that need it are skipped."
     }
 }
 
@@ -102,8 +102,8 @@ $lines.Add('')
 $lines.Add('| Result | Test | Duration |')
 $lines.Add('|---|---|---|')
 foreach ($test in $result.Tests) {
-    $name = & $clean $test.ExpandedPath
-    $lines.Add(('| {0} | {1} | {2:N1} s |' -f $test.Result, $name, $test.Duration.TotalSeconds))
+    $testName = & $clean $test.ExpandedPath
+    $lines.Add(('| {0} | {1} | {2:N1} s |' -f $test.Result, $testName, $test.Duration.TotalSeconds))
 }
 $failed = @($result.Tests | Where-Object Result -EQ 'Failed')
 if ($failed) {

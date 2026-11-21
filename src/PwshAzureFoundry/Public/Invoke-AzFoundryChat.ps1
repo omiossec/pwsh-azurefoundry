@@ -57,6 +57,8 @@ function Invoke-AzFoundryChat {
         @{ type = 'function'; function = @{ name = ...; description = ...; parameters = ... } }.
     .PARAMETER ToolChoice
         How the model uses the tools (tool_choice): auto, none, required, or the name of one function to force.
+        Forcing a function by name is model-specific: Mistral models reject it (422). To force one function on any
+        model, pass only that tool with -Tool and use -ToolChoice required.
     .PARAMETER ExtraBody
         Hashtable merged last into the request body, for parameters this cmdlet does not expose. The service
         rejects fields the model does not know (400 unrecognized_request_argument).
@@ -239,6 +241,22 @@ function Invoke-AzFoundryChat {
             $options['stream_options'] = @{ include_usage = $true }
         }
 
+        # Forcing one function is model-specific: Mistral-Large-3 answers 422 'invalid input error' (integration run,
+        # 2026-11-20) while 'required' works. Rejections of the request then get a hint.
+        $forcesFunction = $PSBoundParameters.ContainsKey('ToolChoice') -and
+        $ToolChoice -notin 'auto', 'none', 'required'
+        $toolHint = "The model may not support forcing the function '$ToolChoice' (Mistral models answer 422). " +
+        'Use -ToolChoice required, with -Tool set to that function only.'
+        $toError = {
+            param([System.Management.Automation.ErrorRecord]$ErrorRecord)
+            if (-not $forcesFunction -or $ErrorRecord.CategoryInfo.Category -ne 'InvalidArgument') {
+                return $ErrorRecord
+            }
+            New-AzFoundryErrorRecord -Exception $ErrorRecord.Exception -Message $ErrorRecord.Exception.Message `
+                -ErrorId ($ErrorRecord.FullyQualifiedErrorId -split ',')[0] -Category InvalidArgument `
+                -TargetObject $ErrorRecord.TargetObject -RecommendedAction $toolHint
+        }
+
         $collected = [System.Collections.Generic.List[object]]::new()
 
         $invokeChat = {
@@ -314,7 +332,7 @@ function Invoke-AzFoundryChat {
         } catch [System.Management.Automation.PipelineStoppedException] {
             throw
         } catch {
-            $PSCmdlet.ThrowTerminatingError($_)
+            $PSCmdlet.ThrowTerminatingError((& $toError $_))
         }
     }
 
@@ -332,7 +350,7 @@ function Invoke-AzFoundryChat {
         } catch [System.Management.Automation.PipelineStoppedException] {
             throw
         } catch {
-            $PSCmdlet.ThrowTerminatingError($_)
+            $PSCmdlet.ThrowTerminatingError((& $toError $_))
         }
     }
 }

@@ -340,4 +340,33 @@ Describe 'Invoke-AzFoundryChat service errors (HTTP layer mocked)' {
             $Headers['api-key'] -eq $testKey -and $Uri -eq 'https://lab.services.ai.azure.com/openai/v1/chat/completions'
         }
     }
+
+    It 'hints at -ToolChoice required when a forced function is rejected (<Status>)' -ForEach @(
+        @{ Status = 422 }
+        @{ Status = 400 }
+    ) {
+        Mock Send-AzFoundryHttpRequest -ModuleName PwshAzureFoundry {
+            New-TestResponse -StatusCode $Status -Content '{"object":"error","message":"invalid input error","type":"invalid_request_error"}'
+        }
+        $tool = New-AzFoundryTool -Name 'get_weather' -Description 'Weather'
+        $err = { Invoke-AzFoundryChat -Model 'm' -Prompt 'hi' -Tool $tool -ToolChoice 'get_weather' } |
+            Should -Throw -PassThru
+        $err.FullyQualifiedErrorId | Should -BeLike 'AzFoundry.*,Invoke-AzFoundryChat'
+        $err.CategoryInfo.Category | Should -Be 'InvalidArgument'
+        $err.Exception.Message | Should -Match 'invalid input error'
+        $err.ErrorDetails.RecommendedAction | Should -Match "forcing the function 'get_weather'.*-ToolChoice required"
+    }
+
+    It 'adds no tool hint for <Case>' -ForEach @(
+        @{ Case = '-ToolChoice required'; Splat = @{ ToolChoice = 'required' }; Status = 422 }
+        @{ Case = 'a forced function rejected for another reason (404)'; Splat = @{ ToolChoice = 'get_weather' }; Status = 404 }
+    ) {
+        Mock Send-AzFoundryHttpRequest -ModuleName PwshAzureFoundry {
+            New-TestResponse -StatusCode $Status -Content '{"error":{"code":"x","message":"rejected"}}'
+        }
+        $tool = New-AzFoundryTool -Name 'get_weather' -Description 'Weather'
+        $err = { Invoke-AzFoundryChat -Model 'm' -Prompt 'hi' -Tool $tool @Splat } | Should -Throw -PassThru
+        $hint = if ($err.ErrorDetails) { $err.ErrorDetails.RecommendedAction }
+        "$hint" | Should -Not -Match 'forcing the function'
+    }
 }
