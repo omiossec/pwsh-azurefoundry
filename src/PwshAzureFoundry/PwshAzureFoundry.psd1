@@ -32,7 +32,6 @@
             LicenseUri   = 'https://github.com/omiossec/pwsh-azurefoundry/blob/main/LICENSE'
             ProjectUri   = 'https://github.com/omiossec/pwsh-azurefoundry'
             ReleaseNotes = 'https://github.com/omiossec/pwsh-azurefoundry/blob/main/CHANGELOG.md'
-            Prerelease   = 'alpha'
         }
     }
 }

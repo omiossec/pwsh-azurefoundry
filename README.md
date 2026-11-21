@@ -5,8 +5,8 @@
 models (LLM chat, embeddings, decision models), list available and deployed models, deploy and
 remove models, and get the endpoint URI and keys, all from PowerShell, without `curl` or the `az` CLI.
 
-> **Status: pre-release (0.1.0-alpha).** The module is not on the PowerShell Gallery yet; the first stable
-> version will be. Until then, build it from source.
+> **Status: 0.1.0**, the first stable version, on the [PowerShell Gallery](https://www.powershellgallery.com/packages/PwshAzureFoundry).
+> Changes are listed in the [CHANGELOG](CHANGELOG.md).
 
 ---
 
@@ -22,7 +22,7 @@ remove models, and get the endpoint URI and keys, all from PowerShell, without `
 ## Install
 
 ```powershell
-# From the PowerShell Gallery (once the first stable version is published)
+# From the PowerShell Gallery
 Install-PSResource PwshAzureFoundry
 
 # From source

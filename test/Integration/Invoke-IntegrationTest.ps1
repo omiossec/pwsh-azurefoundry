@@ -80,7 +80,9 @@ $lines.Add("# Integration run $stamp (UTC)")
 $lines.Add('')
 $lines.Add('| Item | Value |')
 $lines.Add('|---|---|')
-$lines.Add("| Module | $($module.ModuleVersion)-$($module.PrivateData.PSData.Prerelease) (commit $commit) |")
+$prerelease = $module.PrivateData.PSData.Prerelease
+$moduleVersion = if ($prerelease) { "$($module.ModuleVersion)-$prerelease" } else { "$($module.ModuleVersion)" }
+$lines.Add("| Module | $moduleVersion (commit $commit) |")
 $lines.Add("| PowerShell | $($PSVersionTable.PSVersion) on $($PSVersionTable.OS) |")
 $lines.Add("| Pester | $((Get-Module Pester).Version) |")
 $models = foreach ($pair in @(
