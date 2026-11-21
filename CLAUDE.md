@@ -18,6 +18,8 @@ cmdlet's section. Every example runs with `-Verbose`.
 The module backs a **dev.to article** on connecting to and managing Foundry models from PowerShell.
 `samples/article/*.ps1` are the article's snippets: keep them short and copy-paste runnable, and
 never change them without updating `test/Integration/Article.Tests.ps1` and the article draft.
+They deliberately use **plain REST** (Az.Accounts, `Invoke-RestMethod`, `HttpClient`) and **never
+PwshAzureFoundry**: the article shows the plumbing a module removes. The module samples are `samples/*.ps1`.
 Default output views (`Format.ps1xml`) must read well in screenshots.
 
 ## Repository layout

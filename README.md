@@ -5,8 +5,8 @@
 models (LLM chat, embeddings, decision models), list available and deployed models, deploy and
 remove models, and get the endpoint URI and keys, all from PowerShell, without `curl` or the `az` CLI.
 
-> **Status: design phase.** No code has been released yet. The cmdlets below are the planned v0.1
-> surface and may change.
+> **Status: pre-release (0.1.0-alpha).** The module is not on the PowerShell Gallery yet; the first stable
+> version will be. Until then, build it from source.
 
 ---
 
@@ -14,45 +14,69 @@ remove models, and get the endpoint URI and keys, all from PowerShell, without `
 
 | Requirement | Version |
 |---|---|
-| PowerShell | 7.4 or later |
-| Az.Accounts | only for management cmdlets and Entra ID auth |
+| PowerShell | 7.4 or later (Windows, Linux, macOS) |
+| Az.Accounts | 2.13.0 or later, only for management cmdlets and Entra ID auth |
 | Pester *(tests)* | 5.x |
 | PSScriptAnalyzer *(build)* | latest |
 
-## Planned usage
+## Install
 
 ```powershell
-Import-Module PwshAzureFoundry
+# From the PowerShell Gallery (once the first stable version is published)
+Install-PSResource PwshAzureFoundry
 
-# Connect with an API key (or -UseEntraId, or -ResourceGroupName/-AccountName to resolve via ARM)
+# From source
+git clone https://github.com/omiossec/pwsh-azurefoundry
+./pwsh-azurefoundry/build/build.ps1
+Import-Module ./pwsh-azurefoundry/src/PwshAzureFoundry/PwshAzureFoundry.psd1
+```
+
+## Quick start
+
+```powershell
+# Connect from the resource (Az.Accounts): the endpoint and key are read for you...
+Connect-AzAccount
+Connect-AzFoundry -ResourceGroupName 'rg-lab' -AccountName '<resource>'
+
+# ...or with a key only (no Az.Accounts needed)
 $key = Read-Host -AsSecureString 'API key'
 Connect-AzFoundry -Endpoint 'https://<resource>.services.ai.azure.com' -ApiKey $key
 
-# LLM chat
+# Chat, and streaming
 Invoke-AzFoundryChat -Model 'Mistral-Large-3' -Prompt 'I am going to Paris, what should I see?'
-
-# Streaming
-Invoke-AzFoundryChat -Model 'Mistral-Large-3' -Prompt 'Tell me a story' -Stream
+Invoke-AzFoundryChat -Model 'Mistral-Large-3' -Prompt 'Tell me a story' -Stream |
+    ForEach-Object { Write-Host $_.Content -NoNewline }
 
 # Decision model
 Invoke-AzFoundryDecision -Model 'Decision-1.1' `
     -State 'The payment integration still fails. Please help today.' `
     -Predicate @{ urgent = 'Does this message convey urgency?' }
 
+# Embeddings
+'first text', 'second text' | Invoke-AzFoundryEmbedding -Model 'text-embedding-3-small'
+
 # Models and deployments (Az.Accounts)
-Get-AzFoundryModel      -ResourceGroupName rg-lab -AccountName <resource>
-Get-AzFoundryDeployment -ResourceGroupName rg-lab -AccountName <resource>
-New-AzFoundryDeployment -ResourceGroupName rg-lab -AccountName <resource> -ModelName 'Mistral-Large-3' -Capacity 20
-Get-AzFoundryEndpoint   -ResourceGroupName rg-lab -AccountName <resource>
+Get-AzFoundryModel -Format 'Mistral AI' -Task chatCompletion
+Get-AzFoundryDeployment
+Get-AzFoundryModel -Name 'text-embedding-3-small' | New-AzFoundryDeployment -Capacity 10
+Get-AzFoundryDeployment -Name 'text-embedding-3-small' | Remove-AzFoundryDeployment -Confirm:$false
+Get-AzFoundryEndpoint
 ```
 
-## Planned cmdlets
+In CI and containers, the data-plane cmdlets also read `AZURE_FOUNDRY_ENDPOINT` and `AZURE_FOUNDRY_API_KEY`
+when no connection is set (order: cmdlet parameters, then `Connect-AzFoundry`, then the variables). These
+variables hold the key in plain text: prefer `Connect-AzFoundry` interactively. Details, roles and
+troubleshooting are in [docs/README.md](docs/README.md).
+
+## Cmdlets
 
 | Area | Cmdlets |
 |---|---|
 | Connection | `Connect-AzFoundry`, `Get-AzFoundryConnection`, `Disconnect-AzFoundry` |
-| Inference | `New-AzFoundryMessage`, `Invoke-AzFoundryChat`, `Invoke-AzFoundryEmbedding`, `Invoke-AzFoundryDecision` |
+| Inference | `New-AzFoundryMessage`, `New-AzFoundryTool`, `Invoke-AzFoundryChat`, `Invoke-AzFoundryEmbedding`, `Invoke-AzFoundryDecision` |
 | Management | `Get-AzFoundryModel`, `Get-AzFoundryDeployment`, `New-AzFoundryDeployment`, `Remove-AzFoundryDeployment`, `Get-AzFoundryEndpoint` |
+
+Reference: [docs/README.md](docs/README.md). Examples: [samples/](samples/README.md).
 
 ## Repository layout
 
@@ -60,8 +84,8 @@ Get-AzFoundryEndpoint   -ResourceGroupName rg-lab -AccountName <resource>
 |---|---|
 | `src/` | Module sources (`src/PwshAzureFoundry`) |
 | `test/` | Pester unit tests, fixtures, integration tests |
-| `docs/` | Cmdlet reference and guides |
-| `samples/` | Example scripts |
+| `docs/` | Cmdlet reference, authentication guide, troubleshooting |
+| `samples/` | Example scripts; `samples/article/` does the same tasks with plain REST |
 
 ## Related
 
