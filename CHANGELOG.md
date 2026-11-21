@@ -9,6 +9,10 @@ stable versions are published to the PowerShell Gallery.
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-11-21
+
+First stable version, published to the PowerShell Gallery. Changes since 0.1.0-alpha:
+
 ### Changed
 
 - **Breaking:** an endpoint outside Azure (`*.services.ai.azure.com`, `*.openai.azure.com`,
@@ -54,5 +58,6 @@ From the phase 9 review of the module and the samples:
   deployment fails; `decision-triage.ps1` escapes formula characters in ticket text; parameter validation and a
   tool-argument check in the other samples.
 
-[Unreleased]: https://github.com/omiossec/pwsh-azurefoundry/compare/v0.1.0-alpha...HEAD
+[Unreleased]: https://github.com/omiossec/pwsh-azurefoundry/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/omiossec/pwsh-azurefoundry/compare/v0.1.0-alpha...v0.1.0
 [0.1.0-alpha]: https://github.com/omiossec/pwsh-azurefoundry/releases/tag/v0.1.0-alpha
