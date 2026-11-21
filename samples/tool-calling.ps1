@@ -18,15 +18,22 @@
 #>
 [CmdletBinding()]
 param(
+    [ValidateNotNullOrEmpty()]
     [string] $Model = 'Mistral-Large-3',
 
+    [ValidateNotNullOrEmpty()]
     [string] $Prompt = 'Do I need an umbrella in Paris today?'
 )
 
 $ErrorActionPreference = 'Stop'
 
+# Tool arguments come from the model: validate them like user input. Never pass them to
+# Invoke-Expression, and escape them ([uri]::EscapeDataString) before putting them in a URL.
 function Get-Weather {
-    param([string] $City)
+    param(
+        [ValidatePattern("^[\p{L} .'-]{1,80}$")]
+        [string] $City
+    )
     @{ city = $City; forecast = 'rain'; temperatureC = 11 }   # your own code here
 }
 
@@ -54,5 +61,8 @@ for ($round = 1; $round -le 5; $round++) {
         }
         $history.Add((New-AzFoundryMessage -Role tool -ToolCallId $call.Id -Content $answer))
     }
+}
+if ($result.FinishReason -eq 'tool_calls') {
+    Write-Warning 'The model still asks for tools after 5 rounds: no final answer.'
 }
 $result.Content

@@ -93,4 +93,13 @@ Describe 'Get-AzFoundryDeployment' {
             $Body.model -eq 'Mistral-Large-3'
         }
     }
+
+    It 'rejects a name made only of dots (<Name>)' -ForEach @(@{ Name = '.' }, @{ Name = '..' }) {
+        { Get-AzFoundryDeployment -Name $Name } | Should -Throw -ErrorId 'ParameterArgumentValidationError*'
+    }
+
+    It 'rejects a resource group name that ends with a period' {
+        { Get-AzFoundryDeployment -ResourceGroupName 'rg-lab.' } |
+            Should -Throw -ErrorId 'ParameterArgumentValidationError*'
+    }
 }

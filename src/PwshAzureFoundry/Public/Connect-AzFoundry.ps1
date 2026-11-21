@@ -76,7 +76,7 @@ function Connect-AzFoundry {
         [switch]$UseEntraId,
 
         [Parameter(Mandatory, ParameterSetName = 'Arm')]
-        [ValidatePattern('^[-\w.()]{1,90}$')]
+        [ValidatePattern('^[-\w.()]{0,89}[-\w()]$')]
         [string]$ResourceGroupName,
 
         [Parameter(Mandatory, ParameterSetName = 'Arm')]

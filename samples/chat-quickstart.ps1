@@ -16,8 +16,10 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory)]
+    [ValidatePattern('^https://')]
     [string] $Endpoint,
 
+    [ValidateNotNullOrEmpty()]
     [string] $Model = 'Mistral-Large-3'
 )
 

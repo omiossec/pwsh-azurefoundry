@@ -133,6 +133,15 @@ function Invoke-BuildTask {
     Copy-Item -Path (Join-Path $sourceDir '*') -Destination $moduleOutDir -Recurse
     Get-ChildItem -LiteralPath $moduleOutDir -Recurse -File -Filter '.gitkeep' | Remove-Item -Force
 
+    # Only module code ships: a stray .env, fixture or draft under src/ must fail the build, not reach the Gallery
+    $allowed = '.ps1', '.psm1', '.psd1', '.ps1xml'
+    $unexpected = @(Get-ChildItem -LiteralPath $moduleOutDir -Recurse -File -Force |
+            Where-Object { $_.Extension -notin $allowed })
+    if ($unexpected.Count -gt 0) {
+        $names = ($unexpected | ForEach-Object { [IO.Path]::GetRelativePath($moduleOutDir, $_.FullName) }) -join ', '
+        throw "Build: unexpected file(s) in the module: $names."
+    }
+
     $null = Test-ModuleManifest -Path (Join-Path $moduleOutDir "$moduleName.psd1") -ErrorAction Stop
     Write-Information "Build: $moduleOutDir" -InformationAction Continue
 }

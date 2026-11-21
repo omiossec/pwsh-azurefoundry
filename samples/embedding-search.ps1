@@ -15,8 +15,10 @@
 #>
 [CmdletBinding()]
 param(
+    [ValidateNotNullOrEmpty()]
     [string] $Model = 'text-embedding-3-small',
 
+    [ValidateNotNullOrEmpty()]
     [string] $Query = 'How do I restart a Windows service?'
 )
 

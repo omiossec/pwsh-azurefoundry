@@ -24,8 +24,10 @@
     Justification = 'Assigned in the ForEach-Object script block and read after it.')]
 [CmdletBinding()]
 param(
+    [ValidateNotNullOrEmpty()]
     [string] $Model = 'Mistral-Large-3',
 
+    [ValidateNotNullOrEmpty()]
     [string] $SystemPrompt = 'You are a helpful assistant. Answer briefly.'
 )
 

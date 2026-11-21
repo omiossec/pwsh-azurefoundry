@@ -69,7 +69,7 @@ function Get-AzFoundryModel {
 
         [switch]$IncludeDeprecated,
 
-        [ValidatePattern('^[-\w.()]{1,90}$')]
+        [ValidatePattern('^[-\w.()]{0,89}[-\w()]$')]
         [string]$ResourceGroupName,
 
         [ValidatePattern('^[A-Za-z0-9][A-Za-z0-9-]{1,63}$')]
