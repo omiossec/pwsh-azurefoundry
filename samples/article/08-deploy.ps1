@@ -15,9 +15,11 @@ $body = @{
 
 $deployment = Invoke-RestMethod -Method Put -Uri $deploymentUri -Authentication Bearer -Token $armToken `
     -ContentType 'application/json' -Body $body
+# From here on the deployment exists (and can be billed): if a step below fails, run 09-cleanup.ps1
 
 # OpenAI models are ready at once; partner models (Mistral, Cohere...) are 'Creating' for about a minute
-while ($deployment.properties.provisioningState -notin 'Succeeded', 'Failed', 'Canceled') {
+for ($poll = 1; $deployment.properties.provisioningState -notin 'Succeeded', 'Failed', 'Canceled'; $poll++) {
+    if ($poll -gt 60) { throw "$deploymentName is still $($deployment.properties.provisioningState) after 5 min." }
     Start-Sleep -Seconds 5
     $deployment = Invoke-RestMethod -Uri $deploymentUri -Authentication Bearer -Token $armToken
 }

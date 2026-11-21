@@ -10,6 +10,9 @@
     Needs Connect-AzAccount, AZURE_FOUNDRY_RG and AZURE_FOUNDRY_ACCOUNT, a chat deployment and a decision
     deployment on the resource, and the Cognitive Services Contributor role (08-deploy.ps1 creates the
     'article-embedding' deployment; 09-cleanup.ps1 and AfterAll delete it).
+
+    Then samples/article-teaser.ps1, the article's closing block, runs in a child pwsh with PwshAzureFoundry
+    downloaded from the PowerShell Gallery (the version pinned in the article), never the repository copy.
 .EXAMPLE
     Connect-AzAccount
     $env:AZURE_FOUNDRY_RG = 'rg-lab'; $env:AZURE_FOUNDRY_ACCOUNT = '<resource>'
@@ -84,5 +87,39 @@ if ($deploymentUri -and $armToken) {
         } finally {
             $ps.Dispose()
         }
+    }
+}
+
+Describe 'Article module teaser' -Tag 'Integration', 'Article' -Skip:$skip {
+    BeforeAll {
+        $script:galleryVersion = '0.1.0'   # the version pinned in the article and in article-teaser.ps1
+        $script:teaser = (Resolve-Path (Join-Path $PSScriptRoot '../../samples/article-teaser.ps1')).Path
+    }
+
+    It 'pins the same module version as this test' {
+        Get-Content -LiteralPath $script:teaser -Raw |
+            Should -Match ([regex]::Escape("Install-PSResource PwshAzureFoundry -Version $script:galleryVersion"))
+    }
+
+    It 'runs against PwshAzureFoundry from the PowerShell Gallery' {
+        $modulePath = Join-Path $TestDrive 'gallery'
+        $null = New-Item -Path $modulePath -ItemType Directory
+        Save-PSResource -Name PwshAzureFoundry -Version $script:galleryVersion -Repository PSGallery `
+            -Path $modulePath -TrustRepository -Quiet
+
+        # A child process, so that a repository copy loaded in this session cannot be picked up
+        $output = & pwsh -NoProfile -NonInteractive -Command {
+            param($ModulePath, $Script)
+            $ErrorActionPreference = 'Stop'
+            $env:PSModulePath = $ModulePath + [IO.Path]::PathSeparator + $env:PSModulePath
+            & $Script
+            "ModuleBase=$((Get-Module PwshAzureFoundry).ModuleBase)"
+        } -args $modulePath, $script:teaser 2>&1
+        $text = $output | Out-String -Width 160
+        $text | Write-Information -InformationAction Continue
+
+        $LASTEXITCODE | Should -Be 0 -Because $text
+        $base = $output | Where-Object { "$_" -like 'ModuleBase=*' } | Select-Object -Last 1
+        "$base" -replace '^ModuleBase=', '' | Should -BeLike "$modulePath*"
     }
 }

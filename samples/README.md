@@ -15,6 +15,7 @@ They need PwshAzureFoundry, and most use the current connection: run `Connect-Az
 | [`embedding-search.ps1`](embedding-search.ps1) | Embeddings in one batch and cosine similarity search | an embedding deployment |
 | [`deploy-and-call.ps1`](deploy-and-call.ps1) | Connect through ARM, list the catalogue, deploy, call, delete (`-WhatIf` supported) | Az.Accounts, Cognitive Services Contributor |
 | [`tool-calling.ps1`](tool-calling.ps1) | The tool-calling loop: the model asks, the script runs the function and answers | a chat deployment that supports tools |
+| [`article-teaser.ps1`](article-teaser.ps1) | The article's closing block: steps 01 to 07 of `article/` in a few cmdlets | Az.Accounts, the Gallery module |
 
 ```powershell
 Connect-AzAccount
@@ -39,7 +40,7 @@ Run them in order in one session: each one uses the variables of the previous on
 | `06-conversation.ps1` | Multi-turn conversation (the Paris example) |
 | `07-decision.ps1` | Decision model: the urgency example, then ticket triage |
 | `08-deploy.ps1` | Deploy `text-embedding-3-small`, poll, wait for the data plane |
-| `09-cleanup.ps1` | Delete the deployment, forget the secrets |
+| `09-cleanup.ps1` | Delete the deployment, dispose of the secrets and drop them from the session |
 
 ```powershell
 Connect-AzAccount
@@ -47,7 +48,8 @@ $env:AZURE_FOUNDRY_RG = 'rg-lab'; $env:AZURE_FOUNDRY_ACCOUNT = '<resource>'
 Get-ChildItem ./samples/article/*.ps1 | Sort-Object Name | ForEach-Object { . $_.FullName }
 ```
 
-`test/Integration/Article.Tests.ps1` runs them in this order against a real resource. Change a snippet, the
-test and `Article.draft.md` together. PSScriptAnalyzer reports `ConvertTo-SecureString -AsPlainText` and
+`test/Integration/Article.Tests.ps1` runs them in this order against a real resource, then runs
+`article-teaser.ps1` with the module from the PowerShell Gallery. Change a snippet, the test and the article
+together. PSScriptAnalyzer reports `ConvertTo-SecureString -AsPlainText` and
 `Write-Host` in these snippets: they are kept on purpose, because handling the key and printing a stream by
 hand is part of what the article shows.
