@@ -39,10 +39,11 @@ function Get-AzFoundryDeployment {
     param(
         [Parameter(Position = 0)]
         [ValidateNotNullOrEmpty()]
+        [ValidatePattern('^(?!\.+$)')]   # '.' or '..' would become a dot segment in the ARM path
         [SupportsWildcards()]
         [string]$Name,
 
-        [ValidatePattern('^[-\w.()]{1,90}$')]
+        [ValidatePattern('^[-\w.()]{0,89}[-\w()]$')]
         [string]$ResourceGroupName,
 
         [ValidatePattern('^[A-Za-z0-9][A-Za-z0-9-]{1,63}$')]

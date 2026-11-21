@@ -8,6 +8,9 @@
     is one /systemone request with three questions: a predicate (urgent), a choice (team) and a score
     (priority). Invoke-AzFoundryDecision outputs one DecisionAnswer per question; this script folds them into
     one row per ticket.
+
+    Ticket text comes from customers: before it goes to a CSV, a leading = + - @ is escaped with a quote so
+    that a spreadsheet does not run it as a formula.
 .PARAMETER Model
     Decision deployment name.
 .PARAMETER Path
@@ -19,8 +22,10 @@
 #>
 [CmdletBinding()]
 param(
+    [ValidateNotNullOrEmpty()]
     [string] $Model = 'Decision-1.1',
 
+    [ValidateNotNullOrEmpty()]
     [string] $Path
 )
 
@@ -55,7 +60,8 @@ $rows = foreach ($ticket in $tickets) {
         Urgent   = [math]::Round($byQuestion.urgent.Value, 2)
         Team     = $byQuestion.team.Answer
         Priority = $byQuestion.priority.Answer
-        Text     = $ticket.Text
+        # CSV formula injection: neutralise a leading = + - @ (or tab, CR) in customer text
+        Text     = $ticket.Text -replace '^(?=[=+\-@\t\r])', "'"
     }
 }
 $rows | Sort-Object Urgent -Descending

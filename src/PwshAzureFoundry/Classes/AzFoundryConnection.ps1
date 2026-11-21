@@ -62,6 +62,15 @@ class AzFoundryConnection {
         if ([string]::Equals($first.TrimEnd('/'), $second.TrimEnd('/'), [StringComparison]::OrdinalIgnoreCase)) {
             return $true
         }
+        # Host forms of one account are interchangeable, but only on the same port: a key must not follow an
+        # explicit non-default port to another listener.
+        $firstUri = $null
+        $secondUri = $null
+        if (-not [uri]::TryCreate($first, [UriKind]::Absolute, [ref]$firstUri) -or
+            -not [uri]::TryCreate($second, [UriKind]::Absolute, [ref]$secondUri) -or
+            $firstUri.Port -ne $secondUri.Port) {
+            return $false
+        }
         $firstName  = [AzFoundryConnection]::GetAccountName($first)
         $secondName = [AzFoundryConnection]::GetAccountName($second)
         return [bool]$firstName -and $firstName -eq $secondName

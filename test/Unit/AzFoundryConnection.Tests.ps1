@@ -32,6 +32,15 @@ Describe 'AzFoundryConnection' {
         }
     }
 
+    It 'does not treat a non-default port as the same resource' {
+        InModuleScope PwshAzureFoundry {
+            [AzFoundryConnection]::IsSameResource('https://lab.services.ai.azure.com', 'https://lab.openai.azure.com:8443') |
+                Should -BeFalse
+            [AzFoundryConnection]::IsSameResource('https://lab.services.ai.azure.com', 'https://lab.openai.azure.com:443') |
+                Should -BeTrue
+        }
+    }
+
     It 'never shows the key in ToString or the default output' {
         InModuleScope PwshAzureFoundry {
             $connection = [AzFoundryConnection]::new('https://lab.services.ai.azure.com', 'ApiKey')

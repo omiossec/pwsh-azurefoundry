@@ -42,7 +42,7 @@ function Get-AzFoundryEndpoint {
         [switch]$IncludeKey,
 
         [Parameter(ValueFromPipelineByPropertyName)]
-        [ValidatePattern('^[-\w.()]{1,90}$')]
+        [ValidatePattern('^[-\w.()]{0,89}[-\w()]$')]
         [string]$ResourceGroupName,
 
         [Parameter(ValueFromPipelineByPropertyName)]
