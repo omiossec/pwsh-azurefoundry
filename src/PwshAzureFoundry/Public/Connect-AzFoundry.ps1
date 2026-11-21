@@ -27,6 +27,10 @@ function Connect-AzFoundry {
         API key of the resource, as a SecureString (Read-Host -AsSecureString).
     .PARAMETER UseEntraId
         Authenticate with an Entra ID token (needs Az.Accounts and Connect-AzAccount) instead of a key.
+    .PARAMETER AllowCustomEndpoint
+        Accept an -Endpoint host outside Azure (*.services.ai.azure.com, *.openai.azure.com,
+        *.cognitiveservices.azure.com), such as a custom domain or a gateway. Without it, such a host is refused
+        so that a mistyped or tampered endpoint never receives the key or token. With it, a warning is shown.
     .PARAMETER ResourceGroupName
         Resource group of the Foundry resource (Arm parameter set).
     .PARAMETER AccountName
@@ -75,6 +79,10 @@ function Connect-AzFoundry {
         [Parameter(ParameterSetName = 'Arm')]
         [switch]$UseEntraId,
 
+        [Parameter(ParameterSetName = 'ApiKey')]
+        [Parameter(ParameterSetName = 'EntraId')]
+        [switch]$AllowCustomEndpoint,
+
         [Parameter(Mandatory, ParameterSetName = 'Arm')]
         [ValidatePattern('^[-\w.()]{0,89}[-\w()]$')]
         [string]$ResourceGroupName,
@@ -100,6 +108,7 @@ function Connect-AzFoundry {
                 -AccountName $AccountName -SubscriptionId $SubscriptionId -UseEntraId:$UseEntraId
         } else {
             $normalised = ConvertTo-AzFoundryEndpoint -Endpoint $Endpoint
+            Assert-AzFoundryEndpointHost -Endpoint $normalised -AllowCustomEndpoint:$AllowCustomEndpoint
             if (-not $PSCmdlet.ShouldProcess($normalised, 'Connect to the Azure AI Foundry resource')) {
                 return
             }

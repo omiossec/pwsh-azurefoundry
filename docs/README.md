@@ -47,6 +47,11 @@ Connect-AzFoundry -ResourceGroupName 'rg-lab' -AccountName '<resource>' -UseEntr
 
 - Both host forms are accepted (`https://<resource>.services.ai.azure.com` and `https://<resource>.openai.azure.com`);
   a trailing path such as `/openai/v1` is removed. Only `https://` endpoints are allowed.
+- A key or token is sent only to Azure AI Foundry hosts (`*.services.ai.azure.com`, `*.openai.azure.com`,
+  `*.cognitiveservices.azure.com`). Any other host (custom domain, API gateway) is refused with `SecurityError`
+  unless you add `-AllowCustomEndpoint` to `Connect-AzFoundry` or to the cmdlet's `-Endpoint`; it then works with
+  a warning, once per host. `AZURE_FOUNDRY_ENDPOINT` accepts only Azure hosts: use
+  `Connect-AzFoundry -AllowCustomEndpoint` for a custom one.
 - The key is sent in the `api-key` header and Entra ID tokens in `Authorization: Bearer`. Tokens (scope
   `https://cognitiveservices.azure.com/.default`) are cached and refreshed 5 minutes before they expire.
 - Connecting with `-ResourceGroupName`/`-AccountName` also sets the default resource of the management
@@ -105,8 +110,8 @@ Key-based calls need no role, only the key. A resource with `disableLocalAuth = 
 | Inference | [`New-AzFoundryMessage`](#new-azfoundrymessage), [`New-AzFoundryTool`](#new-azfoundrytool), [`Invoke-AzFoundryChat`](#invoke-azfoundrychat), [`Invoke-AzFoundryEmbedding`](#invoke-azfoundryembedding), [`Invoke-AzFoundryDecision`](#invoke-azfoundrydecision) |
 | Management | [`Get-AzFoundryModel`](#get-azfoundrymodel), [`Get-AzFoundryDeployment`](#get-azfoundrydeployment), [`New-AzFoundryDeployment`](#new-azfoundrydeployment), [`Remove-AzFoundryDeployment`](#remove-azfoundrydeployment), [`Get-AzFoundryEndpoint`](#get-azfoundryendpoint) |
 
-Every data-plane cmdlet also takes `-Endpoint`, `-ApiKey`, `-UseEntraId` (override the connection) and
-`-TimeoutSec` (default 120). Every management cmdlet takes `-ResourceGroupName`, `-AccountName` and
+Every data-plane cmdlet also takes `-Endpoint`, `-ApiKey`, `-UseEntraId`, `-AllowCustomEndpoint` (override
+the connection) and `-TimeoutSec` (default 120). Every management cmdlet takes `-ResourceGroupName`, `-AccountName` and
 `-SubscriptionId`. These are not repeated below.
 
 ### Connect-AzFoundry
@@ -115,8 +120,8 @@ Sets the endpoint and the authentication of the session.
 
 | Parameter set | Parameters |
 |---|---|
-| ApiKey | `-Endpoint <string>` `-ApiKey <SecureString>` |
-| EntraId | `-Endpoint <string>` `-UseEntraId` |
+| ApiKey | `-Endpoint <string>` `-ApiKey <SecureString>` [`-AllowCustomEndpoint`] |
+| EntraId | `-Endpoint <string>` `-UseEntraId` [`-AllowCustomEndpoint`] |
 | Arm | `-ResourceGroupName <string>` `-AccountName <string>` [`-SubscriptionId <string>`] [`-UseEntraId`] |
 
 `-PassThru` outputs the `PwshAzureFoundry.Connection`. Supports `-WhatIf`. Connecting again replaces the
@@ -286,8 +291,10 @@ is an error). The `Name` of a deployment is what the inference cmdlets take as `
 | `-SkipReadinessCheck` | do not wait for the data plane to answer |
 
 Without `-NoWait`, the cmdlet waits for `Succeeded` (OpenAI models: at once; partner models: about a
-minute), then sends a minimal request until the deployment answers (about 20 s; a few tokens). It refuses to
-replace an existing deployment.
+minute), then sends a minimal request until the deployment answers (about 20 s; a few tokens). The probe uses
+the `Connect-AzFoundry` session when it is the same resource; otherwise it follows the session's auth mode (an
+Entra ID session never reads the account keys), and without a session it reads the key with `listKeys`. It
+refuses to replace an existing deployment.
 
 ```powershell
 Get-AzFoundryModel -Name 'text-embedding-3-small' | New-AzFoundryDeployment -Capacity 10 -WhatIf
@@ -334,7 +341,9 @@ as SecureString (`POST …/listKeys`).
 
 Errors are `ErrorRecord`s with a category (`AuthenticationError`, `PermissionDenied`, `ObjectNotFound`,
 `InvalidArgument`, `LimitsExceeded`, `SecurityError`…), the service code and message, and a hint in
-`ErrorDetails.RecommendedAction`. Retries (429, 500, 502, 503, 504) honour `Retry-After`, up to 3 times.
+`ErrorDetails.RecommendedAction`. Retries honour `Retry-After`, up to 3 times: 429, 500, 502, 503 and 504 for
+`GET`, `PUT` and `DELETE`, but only 429 for `POST` (chat, embeddings, decision): a 5xx can arrive after the
+model has run and been billed, so a retry could run and bill it twice.
 
 ## Troubleshooting
 
@@ -352,6 +361,8 @@ Errors are `ErrorRecord`s with a category (`AuthenticationError`, `PermissionDen
 | `400 unrecognized_request_argument` | A field in `-ExtraBody` is not known to the model. |
 | `422` with `-ToolChoice <function>` | Some models (Mistral) do not accept a forced function. Pass only that tool with `-Tool` and use `-ToolChoice required`. |
 | A call takes 30–60 s | Service-side latency seen on some calls, with quota left. The default timeout (120 s) covers it; `-Verbose` shows the elapsed time. |
+| `AzFoundryEndpointNotAzure` | The endpoint is not an Azure AI Foundry host. Check it; if it is your custom domain or gateway, add `-AllowCustomEndpoint`. |
+| `5xx` on chat, embeddings or decision | Not retried, because the request may already have run and been billed. Retry the call yourself if needed. |
 | `Az.Accounts is required` | Management cmdlets and `-UseEntraId` need Az.Accounts: `Install-PSResource Az.Accounts`, then `Connect-AzAccount`. |
 
 `-Verbose` shows each request (method, route, status, elapsed time). `-Debug` adds the request bodies,

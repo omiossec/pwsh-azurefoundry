@@ -91,6 +91,27 @@ Describe 'Resolve-AzFoundryConnection' {
             $err.ErrorDetails.RecommendedAction | Should -Match '-ApiKey or -UseEntraId'
         }
 
+        It 'refuses an -Endpoint outside Azure without -AllowCustomEndpoint' {
+            { Resolve-Test @{ Endpoint = 'https://ai.contoso.com'; UseEntraId = $true } } |
+                Should -Throw -ErrorId 'AzFoundryEndpointNotAzure*'
+        }
+
+        It 'accepts an -Endpoint outside Azure with -AllowCustomEndpoint, warning once per host' {
+            InModuleScope PwshAzureFoundry { $script:AzFoundryCustomHostWarned.Clear() }
+            $parameters = @{ Endpoint = 'https://ai.contoso.com'; UseEntraId = $true; AllowCustomEndpoint = $true }
+            $first = @(Resolve-Test $parameters 3>&1)
+            $second = @(Resolve-Test $parameters 3>&1)
+            @($first | Where-Object { $_ -is [System.Management.Automation.WarningRecord] }).Count | Should -Be 1
+            @($second | Where-Object { $_ -is [System.Management.Automation.WarningRecord] }).Count | Should -Be 0
+            ($first | Where-Object { $_ -isnot [System.Management.Automation.WarningRecord] }).Endpoint |
+                Should -Be 'https://ai.contoso.com'
+        }
+
+        It 'reuses a custom session endpoint without -AllowCustomEndpoint (checked by Connect-AzFoundry)' {
+            Set-TestSession -Endpoint 'https://ai.contoso.com'
+            (Resolve-Test @{ Endpoint = 'https://ai.contoso.com' }).Endpoint | Should -Be 'https://ai.contoso.com'
+        }
+
         It 'fails on -Endpoint without credentials and without a session' {
             { Resolve-Test @{ Endpoint = 'https://lab.services.ai.azure.com' } } |
                 Should -Throw -ErrorId 'AzFoundryAuthMissing,Resolve-AzFoundryConnection'
@@ -151,6 +172,14 @@ Describe 'Resolve-AzFoundryConnection' {
             $result = Resolve-Test @{ UseEntraId = $true }
             $result.AuthMode | Should -Be 'EntraId'
             $result.Source | Should -Be 'Environment'
+        }
+
+        It 'refuses an AZURE_FOUNDRY_ENDPOINT outside Azure, pointing to Connect-AzFoundry -AllowCustomEndpoint' {
+            $env:AZURE_FOUNDRY_ENDPOINT = 'https://ai.contoso.com'
+            $env:AZURE_FOUNDRY_API_KEY = 'env-key-value'
+            $err = { Resolve-Test } | Should -Throw -ErrorId 'AzFoundryEndpointNotAzure*' -PassThru
+            $err.ErrorDetails.RecommendedAction | Should -Match 'Connect-AzFoundry .*-AllowCustomEndpoint'
+            $err.ToString() | Should -Not -Match 'env-key-value'
         }
 
         It 'fails when only the endpoint variable is set' {

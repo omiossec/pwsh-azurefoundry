@@ -15,8 +15,10 @@ function Wait-AzFoundryDeploymentReady {
 
         Each probe uses a few tokens. Models with none of these capabilities (image, audio...) are not probed.
 
-        The data-plane connection is the session connection when it points to the same resource, otherwise one
-        built from ARM (key from listKeys, or Entra ID when key authentication is disabled).
+        The data-plane connection is the session connection when it points to the same resource. Otherwise it is
+        built from ARM with the auth mode of the session: an Entra ID session probes with Entra ID and never calls
+        listKeys. A key session, or no session, uses the key from listKeys, and Entra ID when key authentication
+        is disabled on the resource.
 
         Never throws: a timeout or another error is a warning, because the deployment itself succeeded.
         Returns $true when the deployment answered, $false otherwise.
@@ -74,6 +76,9 @@ function Wait-AzFoundryDeploymentReady {
         $connection = if ($session -and $session.AccountName -and
             [string]::Equals($session.AccountName, $Target.AccountName, [StringComparison]::OrdinalIgnoreCase)) {
             $session
+        } elseif ($session -and $session.AuthMode -eq 'EntraId') {
+            Get-AzFoundryArmConnection -ResourceGroupName $Target.ResourceGroupName `
+                -AccountName $Target.AccountName -SubscriptionId $Target.SubscriptionId -UseEntraId
         } else {
             try {
                 Get-AzFoundryArmConnection -ResourceGroupName $Target.ResourceGroupName `

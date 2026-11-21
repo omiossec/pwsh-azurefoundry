@@ -14,7 +14,8 @@ function Invoke-AzFoundryStreamRequest {
         - An error event (an 'error' event type, or a payload with an 'error' property) is a terminating error
           mapped by ConvertTo-AzFoundryErrorRecord.
         - An HTTP error status before the stream starts is mapped the same way as Invoke-AzFoundryRequest;
-          429 and 5xx are retried ($script:AzFoundryMaxRetry, Retry-After honoured).
+          only 429 is retried ($script:AzFoundryPostRetryableStatusCodes, $script:AzFoundryMaxRetry, Retry-After
+          honoured): a 5xx can come after the inference ran and was billed.
         - Ctrl+C, or a downstream command that stops the pipeline, cancels the request; the client, the
           response and the cancellation source are always disposed.
         - -TimeoutSec applies to the response headers and to each read of the body (time between two chunks).
@@ -152,7 +153,7 @@ function Invoke-AzFoundryStreamRequest {
             $response.Dispose()
             $response = $null
 
-            if ($status -in $script:AzFoundryRetryableStatusCodes -and $attempt -le $script:AzFoundryMaxRetry) {
+            if ($status -in $script:AzFoundryPostRetryableStatusCodes -and $attempt -le $script:AzFoundryMaxRetry) {
                 $delay = Get-AzFoundryRetryDelay -Headers $received -Attempt $attempt
                 Write-Verbose ('HTTP {0}: retry {1} of {2} in {3:N1} s.' -f $status, $attempt,
                     $script:AzFoundryMaxRetry, $delay)

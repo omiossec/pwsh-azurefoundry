@@ -99,6 +99,41 @@ Describe 'Connect-AzFoundry' {
             (Get-TestSession).AccountName | Should -Be 'one'
         }
 
+        It 'refuses a host outside Azure without -AllowCustomEndpoint and keeps the current connection' {
+            Connect-AzFoundry -Endpoint 'https://one.services.ai.azure.com' -ApiKey (New-TestSecureString 'k1')
+            $err = { Connect-AzFoundry -Endpoint 'https://ai.contoso.com' -ApiKey (New-TestSecureString 'k2') } |
+                Should -Throw -ErrorId 'AzFoundryEndpointNotAzure*' -PassThru
+            $err.CategoryInfo.Category | Should -Be 'SecurityError'
+            $err.ErrorDetails.RecommendedAction | Should -Match '-AllowCustomEndpoint'
+            (Get-TestSession).AccountName | Should -Be 'one'
+        }
+
+        It 'accepts a host outside Azure with -AllowCustomEndpoint, with a warning' {
+            InModuleScope PwshAzureFoundry { $script:AzFoundryCustomHostWarned.Clear() }
+            $warnings = Connect-AzFoundry -Endpoint 'https://ai.contoso.com:8443' -ApiKey (New-TestSecureString 'k') `
+                -AllowCustomEndpoint 3>&1
+            "$warnings" | Should -BeLike "*'ai.contoso.com' is not an Azure AI Foundry host*"
+            (Get-TestSession).Endpoint | Should -Be 'https://ai.contoso.com:8443'
+        }
+
+        It 'accepts the three Azure host forms without -AllowCustomEndpoint' -ForEach @(
+            @{ Endpoint = 'https://lab.services.ai.azure.com' }
+            @{ Endpoint = 'https://lab.openai.azure.com' }
+            @{ Endpoint = 'https://lab.cognitiveservices.azure.com' }
+        ) {
+            $warnings = Connect-AzFoundry -Endpoint $Endpoint -ApiKey (New-TestSecureString 'k') 3>&1
+            $warnings | Should -BeNullOrEmpty
+            (Get-TestSession).Endpoint | Should -Be $Endpoint
+        }
+
+        It 'refuses a host that only looks like an Azure host' -ForEach @(
+            @{ Endpoint = 'https://lab.openai.azure.com.evil.example' }
+            @{ Endpoint = 'https://evilopenai.azure.com' }
+        ) {
+            { Connect-AzFoundry -Endpoint $Endpoint -ApiKey (New-TestSecureString 'k') } |
+                Should -Throw -ErrorId 'AzFoundryEndpointNotAzure*'
+        }
+
         It 'changes nothing with -WhatIf' {
             Connect-AzFoundry -Endpoint 'https://lab.services.ai.azure.com' -ApiKey (New-TestSecureString 'k') -WhatIf
             Get-TestSession | Should -BeNullOrEmpty

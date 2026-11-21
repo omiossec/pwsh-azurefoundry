@@ -28,7 +28,15 @@ $script:AzFoundryReadinessIntervalSec = 5
 $script:AzFoundryMaxRetry             = 3
 $script:AzFoundryMaxRetryDelaySec     = 60
 $script:AzFoundryRetryableStatusCodes = @(429, 500, 502, 503, 504)
+# POST (inference, listKeys) is not idempotent: a 5xx can come after the work is done and billed, so only a
+# 429 (request rejected before any work) is retried.
+$script:AzFoundryPostRetryableStatusCodes = @(429)
 $script:AzFoundryDefaultTimeoutSec    = 120
+
+# Hosts that receive a key or token without -AllowCustomEndpoint (Assert-AzFoundryEndpointHost), and the
+# custom hosts already warned about in this session.
+$script:AzFoundryAzureHostSuffixes = @('.services.ai.azure.com', '.openai.azure.com', '.cognitiveservices.azure.com')
+$script:AzFoundryCustomHostWarned  = [System.Collections.Generic.HashSet[string]]::new()
 
 # Environment variable fallback (spec section 4.1).
 $script:AzFoundryEndpointEnvVar = 'AZURE_FOUNDRY_ENDPOINT'

@@ -48,6 +48,10 @@ function Invoke-AzFoundryDecision {
         API key (SecureString) overriding the session authentication.
     .PARAMETER UseEntraId
         Use an Entra ID token (Az.Accounts and Connect-AzAccount) instead of a key.
+    .PARAMETER AllowCustomEndpoint
+        Accept an -Endpoint host outside Azure (*.services.ai.azure.com, *.openai.azure.com,
+        *.cognitiveservices.azure.com), such as a custom domain or a gateway. The key or token is sent to it;
+        a warning is shown once per host.
     .EXAMPLE
         Invoke-AzFoundryDecision -Model 'Decision-1.1' `
             -State 'The payment integration still fails. Please help today.' `
@@ -107,7 +111,9 @@ function Invoke-AzFoundryDecision {
 
         [securestring]$ApiKey,
 
-        [switch]$UseEntraId
+        [switch]$UseEntraId,
+
+        [switch]$AllowCustomEndpoint
     )
 
     begin {
@@ -119,7 +125,7 @@ function Invoke-AzFoundryDecision {
         }
 
         $connectionParameters = @{}
-        foreach ($name in 'Endpoint', 'ApiKey', 'UseEntraId') {
+        foreach ($name in 'Endpoint', 'ApiKey', 'UseEntraId', 'AllowCustomEndpoint') {
             if ($PSBoundParameters.ContainsKey($name)) {
                 $connectionParameters[$name] = $PSBoundParameters[$name]
             }

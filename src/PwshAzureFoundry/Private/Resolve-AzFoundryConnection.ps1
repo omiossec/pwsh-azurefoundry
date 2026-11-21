@@ -16,6 +16,10 @@ function Resolve-AzFoundryConnection {
         session; a key is never sent to another resource. The environment key is turned into a SecureString
         as soon as it is read.
 
+        An -Endpoint for another resource, and AZURE_FOUNDRY_ENDPOINT, must be an Azure AI Foundry host
+        (Assert-AzFoundryEndpointHost); -AllowCustomEndpoint accepts another -Endpoint host with a warning. The
+        session endpoint was checked by Connect-AzFoundry.
+
         Throws a terminating error when nothing is configured.
     .PARAMETER Endpoint
         Resource endpoint that overrides the session.
@@ -23,6 +27,8 @@ function Resolve-AzFoundryConnection {
         API key that overrides the session authentication.
     .PARAMETER UseEntraId
         Use an Entra ID token instead of a key.
+    .PARAMETER AllowCustomEndpoint
+        Accept an -Endpoint host outside Azure (custom domain, gateway), with a warning.
     .EXAMPLE
         $connection = Resolve-AzFoundryConnection @PSBoundParameters
     #>
@@ -33,7 +39,9 @@ function Resolve-AzFoundryConnection {
 
         [securestring]$ApiKey,
 
-        [switch]$UseEntraId
+        [switch]$UseEntraId,
+
+        [switch]$AllowCustomEndpoint
     )
 
     if ($ApiKey -and $UseEntraId) {
@@ -74,6 +82,8 @@ function Resolve-AzFoundryConnection {
             $connection.SubscriptionId    = $session.SubscriptionId
             $connection.ResourceGroupName = $session.ResourceGroupName
             $connection.AccountName       = $session.AccountName
+        } else {
+            Assert-AzFoundryEndpointHost -Endpoint $normalised -AllowCustomEndpoint:$AllowCustomEndpoint
         }
 
         if (-not (& $setAuthFromParameter $connection)) {
@@ -105,6 +115,7 @@ function Resolve-AzFoundryConnection {
     $envEndpoint = [System.Environment]::GetEnvironmentVariable($endpointVar)
     if (-not [string]::IsNullOrWhiteSpace($envEndpoint)) {
         $normalised = ConvertTo-AzFoundryEndpoint -Endpoint $envEndpoint
+        Assert-AzFoundryEndpointHost -Endpoint $normalised -Source Environment
         $connection = [AzFoundryConnection]::new($normalised, 'ApiKey')
         $connection.Source = 'Environment'
 

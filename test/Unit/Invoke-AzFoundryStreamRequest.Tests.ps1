@@ -168,6 +168,17 @@ Describe 'Invoke-AzFoundryStreamRequest' {
         Should -Invoke Start-Sleep -ModuleName PwshAzureFoundry -Times 1 -ParameterFilter { $Milliseconds -eq 6000 }
     }
 
+    It 'does not retry a 5xx: the inference may already have run and been billed' {
+        Mock Start-Sleep -ModuleName PwshAzureFoundry {}
+        $handler = New-TestHandler
+        $handler.Enqueue(503, '{"error":{"code":"ServiceUnavailable","message":"busy"}}', 100, $null)
+        $handler.Enqueue(200, $streamText, 100, $null)
+
+        { Invoke-TestStream } | Should -Throw
+        $handler.Requests.Count | Should -Be 1
+        Should -Invoke Start-Sleep -ModuleName PwshAzureFoundry -Times 0 -Exactly
+    }
+
     It 'throws on an error payload in the stream, after the chunks already received' {
         $handler = New-TestHandler
         $errorEvent = 'data: ' + ((Get-TestFixture 'synthetic-error-content-filter-400.json') -replace '\s*\r?\n\s*', '')
