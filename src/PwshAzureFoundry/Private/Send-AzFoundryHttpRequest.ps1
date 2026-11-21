@@ -9,8 +9,10 @@ function Send-AzFoundryHttpRequest {
 
         - https only; redirects are not followed, so a header such as api-key never reaches another host.
         - Retries $script:AzFoundryRetryableStatusCodes (429, 5xx) up to -MaxRetry times, honouring
-          Retry-After / retry-after-ms (Get-AzFoundryRetryDelay). Timeouts are not retried: the service can
-          stall for 35-55 s, and a retry would double the wait and the cost.
+          Retry-After / retry-after-ms (Get-AzFoundryRetryDelay). POST retries only
+          $script:AzFoundryPostRetryableStatusCodes (429): a 5xx can come after the inference ran and was
+          billed. Timeouts are not retried: the service can stall for 35-55 s, and a retry would double the
+          wait and the cost.
         - -Verbose shows method, URI, status and elapsed time. -Debug adds the headers (api-key and
           Authorization masked) and the bodies, cleaned with Hide-AzFoundrySecret. URIs are logged without
           their query string, except api-version.
@@ -159,7 +161,12 @@ function Send-AzFoundryHttpRequest {
             Write-Debug "  Response: $shown"
         }
 
-        $retryable = $response.StatusCode -in $script:AzFoundryRetryableStatusCodes
+        $retryCodes = if ($Method -eq 'POST') {
+            $script:AzFoundryPostRetryableStatusCodes
+        } else {
+            $script:AzFoundryRetryableStatusCodes
+        }
+        $retryable = $response.StatusCode -in $retryCodes
         if (-not $retryable -or $attempt -gt $MaxRetry) {
             return $response
         }

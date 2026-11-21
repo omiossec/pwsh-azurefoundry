@@ -15,7 +15,9 @@ function New-AzFoundryDeployment {
         OpenAI models deploy at once; partner models (Mistral, Cohere...) take about a minute. Without -NoWait the
         cmdlet waits until the deployment has succeeded, then sends a minimal request until the deployment
         answers on the data plane (about 20 s after success; -SkipReadinessCheck turns this off). The readiness
-        check of a chat, embeddings or decision model uses a few tokens.
+        check of a chat, embeddings or decision model uses a few tokens. It uses the Connect-AzFoundry session when
+        it points to the same resource; otherwise it follows the session's auth mode (an Entra ID session never
+        reads the account keys), and without a session it reads the key with listKeys.
 
         The cmdlet refuses to replace an existing deployment with the same name.
 

@@ -9,6 +9,17 @@ stable versions are published to the PowerShell Gallery.
 
 ## [Unreleased]
 
+### Changed
+
+- **Breaking:** an endpoint outside Azure (`*.services.ai.azure.com`, `*.openai.azure.com`,
+  `*.cognitiveservices.azure.com`) is refused with `AzFoundryEndpointNotAzure` unless `-AllowCustomEndpoint` is
+  given to `Connect-AzFoundry`, `Invoke-AzFoundryChat`, `Invoke-AzFoundryEmbedding` or `Invoke-AzFoundryDecision`;
+  then a warning is shown once per host. `AZURE_FOUNDRY_ENDPOINT` accepts only Azure hosts.
+- `POST` requests (chat, embeddings, decision, `listKeys`) are retried on 429 only, no longer on 5xx: a 5xx can
+  come after the model has run and been billed. `GET`, `PUT` and `DELETE` are still retried on 429 and 5xx.
+- The readiness probe of `New-AzFoundryDeployment` follows the session's auth mode: with an Entra ID session it
+  probes with a token and never calls `listKeys`.
+
 ## [0.1.0-alpha] - 2026-11-21
 
 First pre-release.

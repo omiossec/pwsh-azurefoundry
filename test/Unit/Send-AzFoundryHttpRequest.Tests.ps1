@@ -92,6 +92,21 @@ Describe 'Send-AzFoundryHttpRequest' {
             Should -Invoke Start-Sleep -ModuleName PwshAzureFoundry -Times 2 -Exactly
         }
 
+        It 'does not retry a POST on <Status>: the inference may already have run and been billed' -ForEach @(
+            @{ Status = 500 }, @{ Status = 502 }, @{ Status = 503 }, @{ Status = 504 }
+        ) {
+            Mock -ModuleName PwshAzureFoundry Invoke-WebRequest { New-TestWebResponse -StatusCode $Status -Content '' }
+            (Send-Test @{ Uri = $script:uri; Method = 'POST'; Body = '{}' }).StatusCode | Should -Be $Status
+            Should -Invoke Invoke-WebRequest -ModuleName PwshAzureFoundry -Times 1 -Exactly
+            Should -Invoke Start-Sleep -ModuleName PwshAzureFoundry -Times 0 -Exactly
+        }
+
+        It 'retries <Method> on 503 (idempotent)' -ForEach @(@{ Method = 'PUT' }, @{ Method = 'DELETE' }) {
+            Mock -ModuleName PwshAzureFoundry Invoke-WebRequest { New-TestWebResponse -StatusCode 503 -Content '' }
+            Send-Test @{ Uri = $script:uri; Method = $Method; MaxRetry = 1 } | Out-Null
+            Should -Invoke Invoke-WebRequest -ModuleName PwshAzureFoundry -Times 2 -Exactly
+        }
+
         It 'uses the module default of 3 retries' {
             Mock -ModuleName PwshAzureFoundry Invoke-WebRequest { New-TestWebResponse -StatusCode 503 }
             Send-Test @{ Uri = $script:uri } | Out-Null

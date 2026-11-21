@@ -255,4 +255,24 @@ Describe 'Wait-AzFoundryDeploymentReady' {
             $AccountName -eq 'test-foundry' -and $ResourceGroupName -eq 'rg-test' -and -not $UseEntraId
         }
     }
+
+    It 'probes with Entra ID and never reads the keys when the session uses Entra ID' {
+        InModuleScope PwshAzureFoundry {
+            $script:AzFoundryConnection = [AzFoundryConnection]::new('https://other.services.ai.azure.com', 'EntraId')
+        }
+        Mock -ModuleName PwshAzureFoundry Get-AzFoundryArmConnection {
+            & (Get-Module PwshAzureFoundry) {
+                [AzFoundryConnection]::new('https://test-foundry.services.ai.azure.com', 'EntraId')
+            }
+        }
+        Mock -ModuleName PwshAzureFoundry Get-AzFoundryAuthHeader { @{ Authorization = 'Bearer entra-token' } }
+        Add-TestArmRoute POST '.' (New-TestResponse -Content '{}')
+        Invoke-Ready -Task 'embeddings' | Should -BeTrue
+        Should -Invoke Get-AzFoundryArmConnection -ModuleName PwshAzureFoundry -Times 1 -Exactly -ParameterFilter {
+            $AccountName -eq 'test-foundry' -and $UseEntraId
+        }
+        Should -Invoke Get-AzFoundryArmConnection -ModuleName PwshAzureFoundry -Times 0 -Exactly -ParameterFilter {
+            -not $UseEntraId
+        }
+    }
 }
