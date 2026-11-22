@@ -110,14 +110,16 @@ Describe 'Article module teaser' -Tag 'Integration', 'Article' -Skip:$skip {
         Save-PSResource -Name PwshAzureFoundry -Version $script:galleryVersion -Repository PSGallery `
             -Path $modulePath -TrustRepository -Quiet
 
-        # A child process, so that a repository copy loaded in this session cannot be picked up
-        $output = & pwsh -NoProfile -NonInteractive -Command {
-            param($ModulePath, $Script)
-            $ErrorActionPreference = 'Stop'
-            $env:PSModulePath = $ModulePath + [IO.Path]::PathSeparator + $env:PSModulePath
-            & $Script
-            "ModuleBase=$((Get-Module PwshAzureFoundry).ModuleBase)"
-        } -args $modulePath, $script:teaser 2>&1
+        # A child process, so that a repository copy loaded in this session cannot be picked up. The command is a
+        # string, not a script block, so the output comes back as text, formatted as a reader would see it.
+        $quote = { "'" + ($args[0] -replace "'", "''") + "'" }
+        $command = @(
+            '$ErrorActionPreference = ''Stop'''
+            "`$env:PSModulePath = $(& $quote $modulePath) + [IO.Path]::PathSeparator + `$env:PSModulePath"
+            "& $(& $quote $script:teaser)"
+            '"ModuleBase=$((Get-Module PwshAzureFoundry).ModuleBase)"'
+        ) -join '; '
+        $output = & pwsh -NoProfile -NonInteractive -Command $command 2>&1
         $text = $output | Out-String -Width 160
         $text | Write-Information -InformationAction Continue
 
