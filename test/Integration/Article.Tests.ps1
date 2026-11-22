@@ -26,6 +26,9 @@ BeforeDiscovery {
     $snippets = @(Get-ChildItem -Path (Join-Path $PSScriptRoot '../../samples/article') -Filter '*.ps1' |
             Sort-Object Name | ForEach-Object { @{ Name = $_.Name; Path = $_.FullName } })
     $skip = -not ($env:AZURE_FOUNDRY_RG -and $env:AZURE_FOUNDRY_ACCOUNT)
+    if ($skip) {
+        Write-Warning 'AZURE_FOUNDRY_RG and AZURE_FOUNDRY_ACCOUNT are not set: every article test is skipped.'
+    }
 }
 
 Describe 'Article snippets' -Tag 'Integration', 'Article' -Skip:$skip {
