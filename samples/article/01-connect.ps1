@@ -19,7 +19,7 @@ $armApi  = '2025-06-01'
 $group   = "https://management.azure.com/subscriptions/$subscriptionId/resourceGroups/$resourceGroup"
 $account = "$group/providers/Microsoft.CognitiveServices/accounts/$accountName"
 
-# ${account} and not $account: in PowerShell 7, "$account?api-version" reads a variable named 'account?'
+# ${account} and not $account: in PowerShell 7, "$account?api-version" reads a variable named 'account?api'
 $resource = Invoke-RestMethod -Uri "${account}?api-version=$armApi" -Authentication Bearer -Token $armToken
 $endpoint = $resource.properties.endpoints.'AI Foundry API'.TrimEnd('/')
 
